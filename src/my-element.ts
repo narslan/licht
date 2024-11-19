@@ -1,10 +1,12 @@
-import { LitElement, css, html } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
-
 import "@material/web/button/filled-button.js";
 import "@material/web/button/outlined-button.js";
 import "@material/web/checkbox/checkbox.js";
+import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
 import { Chess } from "chess.js";
+import { LitElement, html, css } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
+document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
 /**
  * An example element.
  *
@@ -19,6 +21,9 @@ export class MyElement extends LitElement {
   @property({ type: Number })
   count = 0;
 
+  @property({ type: String })
+  engine_id?: string;
+
   @property({ type: Chess })
   game = new Chess();
 
@@ -27,13 +32,9 @@ export class MyElement extends LitElement {
 
   render() {
     return html`
-      <label>
-        Material 3
-        <md-checkbox checked></md-checkbox>
-        <md-checkbox checked></md-checkbox>
-      </label>
-
+      <p class="md-typescale-body-small">${this.engine_id}</p>
       <md-outlined-button>Back</md-outlined-button>
+      <md-filled-button>Next</md-filled-button>
       <md-filled-button>Next</md-filled-button>
     `;
   }
@@ -45,15 +46,21 @@ export class MyElement extends LitElement {
     this.ws.onopen = function (event: Event) {
       console.log(event);
     };
+    const that = this;
 
     this.ws.onmessage = function (event: MessageEvent) {
-      console.log(event.data);
-      const id = event.data["id"];
+      const { id } = event.data.startsWith("{")
+        ? (JSON.parse(event.data) as {
+            id: string;
+          })
+        : { id: "" };
+
+      that.engine_id = id;
       console.log(id);
     };
   }
 
-  static styles = css``;
+  static styles = [typescaleStyles, css``];
 }
 
 declare global {
