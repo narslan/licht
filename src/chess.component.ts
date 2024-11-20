@@ -35,14 +35,10 @@ export class ChessElement extends LitElement {
   ws = new WebSocket(`ws://localhost:8000/_uci`);
 
   render() {
-    //TODO: This below seems so stupid. Sue me for it.
     const pathname = location.pathname.slice(1);
     let orientation = "";
     let otherOrientation = "";
-    if (pathname === "") {
-      orientation = "white";
-      otherOrientation = "Black";
-    } else if (pathname === "white") {
+    if (pathname === "" || pathname == "white") {
       orientation = "white";
       otherOrientation = "Black";
     } else {
