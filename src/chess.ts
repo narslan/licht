@@ -5,16 +5,20 @@ import { styles as typescaleStyles } from "@material/web/typography/md-typescale
 import { Chess } from "chess.js";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { wsConnect, Message, WsContext } from "./models";
 
 document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
+
+const hrefToWs = `ws://localhost:8000/_uci`;
+
 /**
  * An example element.
  *
  * @slot - This element has a slot
  * @csspart button - The button
  */
-@customElement("my-element")
-export class MyElement extends LitElement {
+@customElement("chess-element")
+export class ChessElement extends LitElement {
   /**
    * The number of times the button has been clicked.
    */
@@ -27,8 +31,8 @@ export class MyElement extends LitElement {
   @property({ type: Chess })
   game = new Chess();
 
-  @property({ type: WebSocket })
-  ws = new WebSocket(`ws://localhost:8000/_home`);
+  @property({ type: WsContext })
+  wsCtx = new WebSocket(hrefToWs);
 
   render() {
     return html`
@@ -42,13 +46,14 @@ export class MyElement extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     await this.updateComplete;
-
-    this.ws.onopen = function (event: Event) {
+    let wsContext: WsContext;
+    wsContext.onMessage = function (event: MessageEvent) {
       console.log(event);
     };
+
     const that = this;
 
-    this.ws.onmessage = function (event: MessageEvent) {
+    this.wsCtx.onmessage = function (event: MessageEvent) {
       const { id } = event.data.startsWith("{")
         ? (JSON.parse(event.data) as {
             id: string;
@@ -65,6 +70,6 @@ export class MyElement extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "my-element": MyElement;
+    "chess-element": ChessElement;
   }
 }
