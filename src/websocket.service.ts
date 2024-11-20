@@ -15,7 +15,9 @@ import {
   PROMOTION_DIALOG_RESULT_TYPE,
   PromotionDialog,
 } from "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog.js";
+import { Accessibility } from "cm-chessboard/src/extensions/accessibility/Accessibility.js";
 
+const game = new Chess();
 // Custom types
 export type Message = {
   text: string;
@@ -153,7 +155,7 @@ export const ping = (wsContext: WsContext) => {
   wsContext.send("ping");
 };
 
-export const makeBoard = (): WsContext => {
+export const makeBoard = (url: string): WsContext => {
   const board = new Chessboard(document.getElementById("board"), {
     position: game.fen(),
     assetsUrl: "./node_modules/cm-chessboard/assets/",
@@ -172,11 +174,9 @@ export const makeBoard = (): WsContext => {
   board.enableMoveInput(inputHandler, COLOR.white);
   const wsContext = {
     ws: undefined,
-    href: hrefToWs,
-    onMessage,
-    log,
-    clear,
-    send: (data) => wsContext.ws?.send(data),
+    href: url,
+    onmessage,
+    send: (data: any) => wsContext.ws?.send(data),
     board: board,
     game: game,
   };

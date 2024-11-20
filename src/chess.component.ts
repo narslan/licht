@@ -2,13 +2,11 @@ import "@material/web/button/filled-button.js";
 import "@material/web/button/outlined-button.js";
 import "@material/web/checkbox/checkbox.js";
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
-import { Chess } from "chess.js";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { wsConnect, Message, WsContext } from "./models";
+import { wsConnect, Message, WsContext, makeBoard } from "./websocket.service";
 
 document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
-
 const hrefToWs = `ws://localhost:8000/_uci`;
 
 /**
@@ -28,41 +26,35 @@ export class ChessElement extends LitElement {
   @property({ type: String })
   engine_id?: string;
 
-  @property({ type: Chess })
-  game = new Chess();
-
-  @property({ type: WsContext })
-  wsCtx = new WebSocket(hrefToWs);
+  @property({ type: makeBoard(hrefToWs) })
+  wsCtx?: WsContext;
 
   render() {
-    return html`
-      <p class="md-typescale-body-small">${this.engine_id}</p>
-      <md-outlined-button>Back</md-outlined-button>
-      <md-filled-button>Next</md-filled-button>
-      <md-filled-button>Next</md-filled-button>
-    `;
+    return html`<div id="board"></div>`;
   }
 
   async connectedCallback() {
     super.connectedCallback();
     await this.updateComplete;
-    let wsContext: WsContext;
-    wsContext.onMessage = function (event: MessageEvent) {
-      console.log(event);
-    };
-
     const that = this;
+    if (this.wsCtx) {
+      this.wsCtx.onMessage = function (event: MessageEvent<string>) {
+        const { id } = event.data.startsWith("{")
+          ? (JSON.parse(event.data) as {
+              id: string;
+            })
+          : { id: "" };
+        that.engine_id = id;
+        console.log(id);
+      };
+    }
 
-    this.wsCtx.onmessage = function (event: MessageEvent) {
-      const { id } = event.data.startsWith("{")
-        ? (JSON.parse(event.data) as {
-            id: string;
-          })
-        : { id: "" };
-
-      that.engine_id = id;
-      console.log(id);
-    };
+    // this.wsCtx.onmessage = function (event: MessageEvent) {
+    //   const { id } = event.data.startsWith("{")
+    //     ? (JSON.parse(event.data) as {
+    //         id: string;
+    //       })
+    //     : { id: "" };
   }
 
   static styles = [typescaleStyles, css``];
