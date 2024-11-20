@@ -48,15 +48,17 @@ export class MyElement extends LitElement {
     };
     const that = this;
 
-    this.ws.onmessage = function (event: MessageEvent) {
-      const { id } = event.data.startsWith("{")
-        ? (JSON.parse(event.data) as {
-            id: string;
+    this.ws.onmessage = function (msg: MessageEvent) {
+      const { action, data } = msg.data.startsWith("{")
+        ? (JSON.parse(msg.data) as {
+            action: string;
+            data: string;
           })
-        : { id: "" };
+        : { action: "", data: "" };
 
-      that.engine_id = id;
-      console.log(id);
+      if (action === "onConnect") {
+        that.engine_id = data;
+      }
     };
   }
 

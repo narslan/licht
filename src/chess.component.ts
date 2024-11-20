@@ -57,7 +57,7 @@ export class ChessElement extends LitElement {
             @drag-start="${this._onDragStart}"
             @drop="${this._onDrop}"
             @snap-end="${this._onSnapEnd}"
-            style="width: 640px"
+            style="width: 1600px"
             position="start"
             orientation="${orientation}"
             draggable-pieces
