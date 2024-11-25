@@ -1,26 +1,8 @@
-@font-face {
-  font-family: "Clear Sans";
-  font-style: normal;
-  src: url("../ClearSans/ClearSans-Regular.woff") format("woff");
-}
-
-@font-face {
-  font-family: "Clear Sans Medium";
-  font-style: bold;
-  src: url("../ClearSans/ClearSans-Medium.woff") format("woff");
-}
-
-@font-face {
-  font-family: "Clear Sans Bold";
-  font-style: bold;
-  src: url("../ClearSans/ClearSans-Bold.woff") format("woff");
-}
-
 :root {
-  --my-brand-font: "Clear Sans";
-  --my-headline-font: "Clear Sans Bold";
-  --my-title-font: "Clear Sans";
-  --my-plain-font: "Clear Sans";
+  --my-brand-font: "Open Sans";
+  --my-headline-font: "Open Sans Bold";
+  --my-title-font: "Open Sans";
+  --my-plain-font: "Open Sans";
 
   --md-ref-typeface-brand: var(--my-brand-font);
   --md-ref-typeface-plain: var(--my-plain-font);
