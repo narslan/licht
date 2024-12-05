@@ -21,7 +21,8 @@ export class ChessElement extends LitElement {
   _pgn: any;
   @query("#fen")
   _fen: any;
-
+  @property({ type: String })
+  orientation = "white";
   /**
    * The number of times the button has been clicked.
    */
@@ -35,17 +36,6 @@ export class ChessElement extends LitElement {
   ws = new WebSocket(`ws://localhost:8000/_uci`);
 
   render() {
-    const pathname = location.pathname.slice(1);
-    let orientation = "";
-    let otherOrientation = "";
-    if (pathname === "" || pathname == "white") {
-      orientation = "white";
-      otherOrientation = "Black";
-    } else {
-      orientation = "black";
-      otherOrientation = "White";
-    }
-
     return html`
       <div style="display:flex ">
         <div>
@@ -55,19 +45,12 @@ export class ChessElement extends LitElement {
             @snap-end="${this._onSnapEnd}"
             style="width: 1600px"
             position="start"
-            orientation="${orientation}"
+            orientation="${this.orientation}"
             draggable-pieces
           >
           </chess-board>
           <div id="fen"></div>
-          <button
-            @click="${() =>
-              window.location.replace(
-                `http://localhost:5173/${otherOrientation.toLowerCase()}`
-              )}"
-          >
-            Play ${otherOrientation}
-          </button>
+          <button @click="${() => 1 == 1}">Play</button>
         </div>
         <div
           style="display:flex; flex-direction: column; flex-wrap: wrap; width: 200px;  "

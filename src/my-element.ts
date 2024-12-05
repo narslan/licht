@@ -3,8 +3,9 @@ import "@material/web/button/outlined-button.js";
 import "@material/web/checkbox/checkbox.js";
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
 import { Chess } from "chess.js";
-import { LitElement, html, css } from "lit";
+import { LitElement, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ChessElement } from "./chess.component";
 
 document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
 /**
@@ -30,13 +31,15 @@ export class MyElement extends LitElement {
   @property({ type: WebSocket })
   ws = new WebSocket(`ws://localhost:8000/_home`);
 
+  @property({ type: String })
+  color = "white";
+
   render() {
-    return html`
-      <p class="md-typescale-body-small">${this.engine_id}</p>
-      <md-outlined-button>Back</md-outlined-button>
-      <md-filled-button>Next</md-filled-button>
-      <md-filled-button>Next</md-filled-button>
-    `;
+    if (this.color === "white") {
+      return new ChessElement();
+    } else {
+      return new ChessElement();
+    }
   }
 
   async connectedCallback() {
