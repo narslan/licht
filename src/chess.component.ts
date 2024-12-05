@@ -50,7 +50,11 @@ export class ChessElement extends LitElement {
           >
           </chess-board>
           <div id="fen"></div>
-          <button @click="${() => 1 == 1}">Play</button>
+          <p>
+            <button @click=${this._dispatchChangeOrientation}>
+              Change Sides
+            </button>
+          </p>
         </div>
         <div
           style="display:flex; flex-direction: column; flex-wrap: wrap; width: 200px;  "
@@ -61,6 +65,16 @@ export class ChessElement extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  _dispatchChangeOrientation() {
+    const name = this.orientation === "black" ? "white" : "black";
+    const options = {
+      detail: { name },
+      bubbles: true,
+      composed: true,
+    };
+    this.dispatchEvent(new CustomEvent("boardOrientation", options));
   }
 
   async connectedCallback() {
