@@ -22,7 +22,7 @@ export class ChessElement extends LitElement {
   @query("#fen")
   _fen: any;
   @property({ type: String })
-  orientation = "white";
+  orientation = "";
   /**
    * The number of times the button has been clicked.
    */
@@ -68,13 +68,17 @@ export class ChessElement extends LitElement {
   }
 
   _dispatchChangeOrientation() {
-    const name = this.orientation === "black" ? "white" : "black";
-    const options = {
-      detail: { name },
-      bubbles: true,
-      composed: true,
-    };
-    this.dispatchEvent(new CustomEvent("boardOrientation", options));
+    this.orientation = this.orientation === "black" ? "white" : "black";
+
+    // const name = this.orientation === "black" ? "white" : "black";
+    // const options = {
+    //   detail: { name },
+    //   bubbles: true,
+    //   composed: true,
+    // };
+    // console.log("options", options);
+
+    // this.dispatchEvent(new CustomEvent("boardOrientation", options));
   }
 
   async connectedCallback() {
