@@ -45,7 +45,7 @@ export class ChessElement2 extends LitElement {
   game = new Chess();
   @property({ type: WebSocket })
   ws = new WebSocket(`ws://localhost:8000/_uci`);
-  @property({ type: Chessboard })
+  @property({ type: Object, attribute: false })
   board = new Chessboard(document.getElementById("board"), {
     position: this.game.fen(),
     assetsUrl: "./node_modules/cm-chessboard/assets/",
@@ -69,38 +69,103 @@ export class ChessElement2 extends LitElement {
 
   render() {
     return html`
-        <div id="status"></div>
+    <div id="status"></div>
     <div id="pgn"></div>
     <div id="fen"></div>
 
     `;
   }
 
-  constructor() {
-    super();
-    this.game = new Chess();
-  }
 
-
-  _dispatchChangeOrientation() {
-    this.orientation = this.orientation === "black" ? "white" : "black";
-
-    // const name = this.orientation === "black" ? "white" : "black";
-    // const options = {
-    //   detail: { name },
-    //   bubbles: true,
-    //   composed: true,
-    // };
-    // console.log("options", options);
-
-    // this.dispatchEvent(new CustomEvent("boardOrientation", options));
-  }
 
   async connectedCallback() {
     super.connectedCallback();
     await this.updateComplete;
+    const game = this.game;
+    const ws = this.ws;
+    function makeEngineMove() {
 
-    this.ws.onmessage = (msg: MessageEvent) => {
+      const fen = { action: "onMove", data: game.fen() };
+      ws.send(JSON.stringify(fen));
+    }
+    function inputHandler(event: any) {
+      const cboard = event.chessboard;
+      if (event.type === INPUT_EVENT_TYPE.movingOverSquare) {
+        return; // ignore this event
+      }
+      if (event.type !== INPUT_EVENT_TYPE.moveInputFinished) {
+        cboard.removeLegalMovesMarkers();
+      }
+      if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
+        console.log(game);
+
+        // mark legal moves
+        const moves = game.moves({
+          square: event.squareFrom,
+          verbose: true,
+        });
+        cboard.addLegalMovesMarkers(moves);
+        return moves.length > 0;
+      } else if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
+        const move = {
+          from: event.squareFrom,
+          to: event.squareTo,
+          promotion: event.promotion,
+        };
+        const result = game.move(move);
+        if (result) {
+          cboard.state.moveInputProcess.then(() => {
+            // wait for the move input process has finished
+            cboard.setPosition(game.fen(), true).then(() => {
+              // update position, maybe castled and wait for animation has finished
+              makeEngineMove();
+            });
+          });
+        } else {
+          // promotion?
+          let possibleMoves = game.moves({
+            square: event.squareFrom,
+            verbose: true,
+          });
+          for (const possibleMove of possibleMoves) {
+            if (
+              possibleMove.promotion &&
+              possibleMove.to === event.squareTo
+            ) {
+              cboard.showPromotionDialog(
+                event.squareTo,
+                COLOR.white,
+                (result: any) => {
+                  console.log("promotion result", result);
+                  if (
+                    result.type === PROMOTION_DIALOG_RESULT_TYPE.pieceSelected
+                  ) {
+                    game.move({
+                      from: event.squareFrom,
+                      to: event.squareTo,
+                      promotion: result.piece.charAt(1),
+                    });
+                    cboard.setPosition(game.fen(), true);
+                    makeEngineMove();
+                  } else {
+                    // promotion canceled
+                    cboard.enableMoveInput(this.inputHandler, COLOR.white);
+                    cboard.setPosition(game.fen(), true);
+                  }
+                }
+              );
+              return true;
+            }
+          }
+        }
+        return result;
+      } else if (event.type === INPUT_EVENT_TYPE.moveInputFinished) {
+        if (event.legalMove) {
+          cboard.disableMoveInput();
+        }
+      }
+    }
+    ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
           action: string;
@@ -108,127 +173,54 @@ export class ChessElement2 extends LitElement {
         })
         : { action: "", data: "" };
 
+
       if (action === "onConnect") {
         this.engine_id = data;
       } else if (action === "onMove") {
+
         if (data.length == 4 || data.length == 5) {
           const from = data.slice(0, 2);
           const to = data.slice(2, 4);
 
           try {
-            this.game.move({
+            game.move({
               from: from,
               to: to,
               promotion: "q", // NOTE: always promote to a queen
             });
 
-            this.updateStatus();
+            this.board.setPosition(game.fen(), true)
+            this.board.enableMoveInput(inputHandler, COLOR.white)
+
+            this.updateStatus(game);
           } catch (error) {
             console.log("error from server", error);
           }
         }
       }
     };
-
-    this.board.enableMoveInput(this.inputHandler, COLOR.white);
+    this.board.enableMoveInput(inputHandler, COLOR.white);
   }
 
 
-  makeEngineMove() {
-    const fen = { action: "onMove", data: this.game.fen() };
-    this.ws.send(JSON.stringify(fen));
-  }
-  inputHandler(event: any) {
-    console.log("inputHandler", event);
-    const cboard = event.chessboard;
-    if (event.type === INPUT_EVENT_TYPE.movingOverSquare) {
-      return; // ignore this event
-    }
-    if (event.type !== INPUT_EVENT_TYPE.moveInputFinished) {
-      cboard.removeLegalMovesMarkers();
-    }
-    if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
-      console.log(this.game);
 
-      // mark legal moves
-      const moves = this.game.moves({
-        square: event.squareFrom,
-        verbose: true,
-      });
-      cboard.addLegalMovesMarkers(moves);
-      return moves.length > 0;
-    } else if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
-      const move = {
-        from: event.squareFrom,
-        to: event.squareTo,
-        promotion: event.promotion,
-      };
-      const result = this.game.move(move);
-      if (result) {
-        cboard.state.moveInputProcess.then(() => {
-          // wait for the move input process has finished
-          cboard.setPosition(this.game.fen(), true).then(() => {
-            // update position, maybe castled and wait for animation has finished
-            this.makeEngineMove();
-          });
-        });
-      } else {
-        // promotion?
-        let possibleMoves = this.game.moves({
-          square: event.squareFrom,
-          verbose: true,
-        });
-        for (const possibleMove of possibleMoves) {
-          if (
-            possibleMove.promotion &&
-            possibleMove.to === event.squareTo
-          ) {
-            cboard.showPromotionDialog(
-              event.squareTo,
-              COLOR.white,
-              (result: any) => {
-                console.log("promotion result", result);
-                if (
-                  result.type === PROMOTION_DIALOG_RESULT_TYPE.pieceSelected
-                ) {
-                  this.game.move({
-                    from: event.squareFrom,
-                    to: event.squareTo,
-                    promotion: result.piece.charAt(1),
-                  });
-                  cboard.setPosition(this.game.fen(), true);
-                  this.makeEngineMove();
-                } else {
-                  // promotion canceled
-                  cboard.enableMoveInput(this.inputHandler, COLOR.white);
-                  cboard.setPosition(this.game.fen(), true);
-                }
-              }
-            );
-            return true;
-          }
-        }
-      }
-      return result;
-    } else if (event.type === INPUT_EVENT_TYPE.moveInputFinished) {
-      if (event.legalMove) {
-        cboard.disableMoveInput();
-      }
-    }
-  }
 
-  private updateStatus() {
+
+
+  updateStatus(game: Chess) {
+
+
     let status = "";
 
     let moveColor = "White";
-    if (this.game.turn() === "b") {
+    if (game.turn() === "b") {
       moveColor = "Black";
     }
 
-    if (this.game.isCheckmate()) {
+    if (game.isCheckmate()) {
       // checkmate?
       status = `Game over, ${moveColor} is in checkmate.`;
-    } else if (this.game.isDraw()) {
+    } else if (game.isDraw()) {
       // draw?
       status = "Game over, drawn position";
     } else {
@@ -236,20 +228,26 @@ export class ChessElement2 extends LitElement {
       status = `${moveColor} to move`;
 
       // check?
-      if (this.game.isCheck()) {
+      if (game.isCheck()) {
         status += `, ${moveColor} is in check`;
       }
     }
-    // this._chessBoard.setPosition(this.game.fen());
+    // this._chessBoard.setPosition(game.fen());
     this._status.innerHTML = status;
-    this._fen.innerHTML = this.game.fen();
-    this._pgn.innerHTML = this.game.pgn();
+    this._fen.innerHTML = game.fen();
+    this._pgn.innerHTML = game.pgn();
   }
 
   firstUpdated() {
-    this.updateStatus();
+    this.updateStatus(this.game);
   }
+
 }
+
+
+
+
+
 
 declare global {
   interface HTMLElementTagNameMap {
