@@ -1,6 +1,6 @@
 // Must use ?inline because ?inline prevents vite from inserting the styles in
 // a <style> the <head>
-import { LitElement, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { Chess } from "chess.js";
 
@@ -23,9 +23,7 @@ export class ChessElement extends LitElement {
   _fen: any;
   @property({ type: String })
   orientation = "";
-  /**
-   * The number of times the button has been clicked.
-   */
+
   @property({ type: Number })
   count = 0;
   @property({ type: String })
@@ -35,15 +33,21 @@ export class ChessElement extends LitElement {
   @property({ type: WebSocket })
   ws = new WebSocket(`ws://localhost:8000/_uci`);
 
+static styles = css`
+    #chessboard {
+     
+    }
+  `;
+
   render() {
     return html`
-      <div style="display:flex ">
+      <div    id="chessboard" style="display:flex ">
         <div>
           <chess-board
             @drag-start="${this._onDragStart}"
             @drop="${this._onDrop}"
             @snap-end="${this._onSnapEnd}"
-            style="width: 1600px"
+            style="width: 600px"
             position="start"
             orientation="${this.orientation}"
             draggable-pieces
