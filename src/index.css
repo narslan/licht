@@ -17,3 +17,8 @@
   padding: 2rem;
   text-align: center;
 }
+
+#board {
+  width: 800px;
+  height: 800px;
+}

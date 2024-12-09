@@ -46,19 +46,29 @@ export class ChessElement2 extends LitElement {
   @property({ type: WebSocket })
   ws = new WebSocket(`ws://localhost:8000/_uci`);
   @property({ type: Chessboard })
-  board = new Chessboard();
+  board = new Chessboard(document.getElementById("board"), {
+    position: this.game.fen(),
+    assetsUrl: "./node_modules/cm-chessboard/assets/",
+    style: {
+      borderType: BORDER_TYPE.none,
+      pieces: { file: "pieces/staunty.svg" },
+      animationDuration: 300,
+    },
+    orientation: COLOR.white,
+    extensions: [
+      { class: Markers, props: { autoMarkers: MARKER_TYPE.square } },
+      { class: PromotionDialog },
+      { class: Accessibility, props: { visuallyHidden: true } },
+    ],
+  });
 
 
   static styles = css`
-    #board {
-     width: 400px;
-      max-width: 500px;
-    }
+
   `;
 
   render() {
     return html`
-    <div id="board"></div> 
         <div id="status"></div>
     <div id="pgn"></div>
     <div id="fen"></div>
@@ -66,7 +76,10 @@ export class ChessElement2 extends LitElement {
     `;
   }
 
-
+  constructor() {
+    super();
+    this.game = new Chess();
+  }
 
 
   _dispatchChangeOrientation() {
@@ -127,20 +140,22 @@ export class ChessElement2 extends LitElement {
   }
   inputHandler(event: any) {
     console.log("inputHandler", event);
-    this.board = event.chessboard;
+    const cboard = event.chessboard;
     if (event.type === INPUT_EVENT_TYPE.movingOverSquare) {
       return; // ignore this event
     }
     if (event.type !== INPUT_EVENT_TYPE.moveInputFinished) {
-      this.board.removeLegalMovesMarkers();
+      cboard.removeLegalMovesMarkers();
     }
     if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
+      console.log(this.game);
+
       // mark legal moves
       const moves = this.game.moves({
         square: event.squareFrom,
         verbose: true,
       });
-      this.board.addLegalMovesMarkers(moves);
+      cboard.addLegalMovesMarkers(moves);
       return moves.length > 0;
     } else if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
       const move = {
@@ -150,9 +165,9 @@ export class ChessElement2 extends LitElement {
       };
       const result = this.game.move(move);
       if (result) {
-        this.board.state.moveInputProcess.then(() => {
+        cboard.state.moveInputProcess.then(() => {
           // wait for the move input process has finished
-          this.board.setPosition(this.game.fen(), true).then(() => {
+          cboard.setPosition(this.game.fen(), true).then(() => {
             // update position, maybe castled and wait for animation has finished
             this.makeEngineMove();
           });
@@ -168,7 +183,7 @@ export class ChessElement2 extends LitElement {
             possibleMove.promotion &&
             possibleMove.to === event.squareTo
           ) {
-            this.board.showPromotionDialog(
+            cboard.showPromotionDialog(
               event.squareTo,
               COLOR.white,
               (result: any) => {
@@ -181,12 +196,12 @@ export class ChessElement2 extends LitElement {
                     to: event.squareTo,
                     promotion: result.piece.charAt(1),
                   });
-                  this.board.setPosition(this.game.fen(), true);
+                  cboard.setPosition(this.game.fen(), true);
                   this.makeEngineMove();
                 } else {
                   // promotion canceled
-                  this.board.enableMoveInput(this.inputHandler, COLOR.white);
-                  this.board.setPosition(this.game.fen(), true);
+                  cboard.enableMoveInput(this.inputHandler, COLOR.white);
+                  cboard.setPosition(this.game.fen(), true);
                 }
               }
             );
@@ -197,7 +212,7 @@ export class ChessElement2 extends LitElement {
       return result;
     } else if (event.type === INPUT_EVENT_TYPE.moveInputFinished) {
       if (event.legalMove) {
-        this.board.disableMoveInput();
+        cboard.disableMoveInput();
       }
     }
   }
@@ -233,21 +248,6 @@ export class ChessElement2 extends LitElement {
 
   firstUpdated() {
     this.updateStatus();
-    this.board = new Chessboard(document.getElementById("board"), {
-      position: this.game.fen(),
-      assetsUrl: "./node_modules/cm-chessboard/assets/",
-      style: {
-        borderType: BORDER_TYPE.none,
-        pieces: { file: "pieces/staunty.svg" },
-        animationDuration: 300,
-      },
-      orientation: COLOR.white,
-      extensions: [
-        { class: Markers, props: { autoMarkers: MARKER_TYPE.square } },
-        { class: PromotionDialog },
-        { class: Accessibility, props: { visuallyHidden: true } },
-      ],
-    });
   }
 }
 
