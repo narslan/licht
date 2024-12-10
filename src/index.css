@@ -16,4 +16,5 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  font-family: var(--my-brand-font);
 }

@@ -5,7 +5,7 @@ import { styles as typescaleStyles } from "@material/web/typography/md-typescale
 import { Chess } from "chess.js";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import './chess.component';
+import "./chess.component";
 document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
 /**
  * An example element.
@@ -13,8 +13,8 @@ document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
  * @slot - This element has a slot
  * @csspart button - The button
  */
-@customElement("my-element")
-export class MyElement extends LitElement {
+@customElement("home-element")
+export class HomeElement extends LitElement {
   /**
    * The number of times the button has been clicked.
    */
@@ -34,7 +34,15 @@ export class MyElement extends LitElement {
   color = "white";
 
   render() {
-    return html`<chess-element></chess-element>`;
+    return html`
+      <label>
+        Material 3
+        <md-checkbox checked></md-checkbox>
+      </label>
+
+      <md-outlined-button>Back</md-outlined-button>
+      <md-filled-button>Next</md-filled-button>
+    `;
   }
 
   async connectedCallback() {
@@ -49,9 +57,9 @@ export class MyElement extends LitElement {
     this.ws.onmessage = function (msg: MessageEvent) {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-          action: string;
-          data: string;
-        })
+            action: string;
+            data: string;
+          })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
@@ -60,11 +68,18 @@ export class MyElement extends LitElement {
     };
   }
 
-  static styles = [typescaleStyles, css``];
+  static styles = [
+    typescaleStyles,
+    css`
+      label {
+        font-family: "Open Sans";
+      }
+    `,
+  ];
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "my-element": MyElement;
+    "home-element": HomeElement;
   }
 }
