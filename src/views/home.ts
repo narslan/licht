@@ -5,7 +5,7 @@ import { styles as typescaleStyles } from "@material/web/typography/md-typescale
 import { Chess } from "chess.js";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import "./chess.component";
+import "./chess";
 document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
 /**
  * An example element.
