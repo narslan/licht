@@ -1,4 +1,4 @@
-import { html, LitElement } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "./views/chess";
 import "./views/home";
@@ -6,6 +6,7 @@ import "./views/random";
 
 import "@material/web/tabs/tabs";
 import "@material/web/list/list";
+import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
 
 import { Router } from "@vaadin/router";
 
@@ -39,24 +40,33 @@ export class MainLayout extends LitElement {
 
   render() {
     return html`
-      <md-list style="max-width: 300px;">
-        <md-list-item @click=${() => this.switchRoute("")}> Home </md-list-item>
-        <md-divider></md-divider>
+      <div id="container">
+        <div id="lsidebar">
+          <md-list style="max-width: 300px;">
+            <md-list-item @click=${() => this.switchRoute("")}>
+              Home
+            </md-list-item>
+            <md-divider></md-divider>
 
-        <md-list-item @click=${() => this.switchRoute("chess")}>
-          Chess
-        </md-list-item>
-        <md-divider></md-divider>
+            <md-list-item @click=${() => this.switchRoute("chess")}>
+              Chess
+            </md-list-item>
+            <md-divider></md-divider>
 
-        <md-list-item @click=${() => this.switchRoute("random")}>
-          Random
-        </md-list-item>
-        <md-divider></md-divider>
-      </md-list>
-      <section slot="appContent">
-        <header slot="title">${this.activeTab}</header>
-        <main></main>
-      </section>
+            <md-list-item @click=${() => this.switchRoute("random")}>
+              Random
+            </md-list-item>
+            <md-divider></md-divider>
+          </md-list>
+        </div>
+
+        <div id="rsidebar">
+          <section slot="appContent">
+            <header slot="title">${this.activeTab}</header>
+            <main></main>
+          </section>
+        </div>
+      </div>
     `;
   }
 
@@ -73,4 +83,16 @@ export class MainLayout extends LitElement {
   toggleHamburger() {
     this.openDrawer = !this.openDrawer;
   }
+
+  static styles = [
+    typescaleStyles,
+    css`
+      #container {
+        display: flex;
+      }
+      #lsidebar {
+        width: 300px;
+      }
+    `,
+  ];
 }

@@ -68,6 +68,11 @@ export class HomeElement extends LitElement {
     };
   }
 
+  async disconnectedCallback() {
+    super.disconnectedCallback();
+    this.ws.close();
+  }
+
   static styles = [
     typescaleStyles,
     css`

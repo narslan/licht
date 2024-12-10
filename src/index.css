@@ -10,11 +10,3 @@
   --md-sys-typescale-headline-font: var(--my-headline-font);
   --md-sys-typescale-title-font: var(--my-title-font);
 }
-
-:host {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  font-family: var(--my-brand-font);
-}

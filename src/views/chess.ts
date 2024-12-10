@@ -35,13 +35,12 @@ export class ChessElement extends LitElement {
 
   static styles = css`
     #chessboard {
-     
     }
   `;
 
   render() {
     return html`
-      <div  id="chessboard" style="display:flex ">
+      <div id="chessboard" style="display:flex ">
         <div>
           <chess-board
             @drag-start="${this._onDragStart}"
@@ -92,9 +91,9 @@ export class ChessElement extends LitElement {
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-          action: string;
-          data: string;
-        })
+            action: string;
+            data: string;
+          })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
@@ -118,6 +117,11 @@ export class ChessElement extends LitElement {
         }
       }
     };
+  }
+
+  async disconnectedCallback() {
+    super.disconnectedCallback();
+    this.ws.close();
   }
 
   private _onDragStart(e: CustomEvent) {
