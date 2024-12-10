@@ -33,7 +33,7 @@ export class ChessElement extends LitElement {
   @property({ type: WebSocket })
   ws = new WebSocket(`ws://localhost:8000/_uci`);
 
-static styles = css`
+  static styles = css`
     #chessboard {
      
     }
@@ -41,13 +41,13 @@ static styles = css`
 
   render() {
     return html`
-      <div    id="chessboard" style="display:flex ">
+      <div  id="chessboard" style="display:flex ">
         <div>
           <chess-board
             @drag-start="${this._onDragStart}"
             @drop="${this._onDrop}"
             @snap-end="${this._onSnapEnd}"
-            style="width: 600px"
+            style="width: 800px"
             position="start"
             orientation="${this.orientation}"
             draggable-pieces
@@ -92,9 +92,9 @@ static styles = css`
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-            action: string;
-            data: string;
-          })
+          action: string;
+          data: string;
+        })
         : { action: "", data: "" };
 
       if (action === "onConnect") {

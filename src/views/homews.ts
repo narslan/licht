@@ -3,10 +3,9 @@ import "@material/web/button/outlined-button.js";
 import "@material/web/checkbox/checkbox.js";
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
 import { Chess } from "chess.js";
-import { LitElement, css } from "lit";
+import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ChessElement } from "./chess.component";
-
+import './chess.component';
 document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
 /**
  * An example element.
@@ -35,11 +34,7 @@ export class MyElement extends LitElement {
   color = "white";
 
   render() {
-    if (this.color === "white") {
-      return new ChessElement();
-    } else {
-      return new ChessElement();
-    }
+    return html`<chess-element></chess-element>`;
   }
 
   async connectedCallback() {
@@ -54,9 +49,9 @@ export class MyElement extends LitElement {
     this.ws.onmessage = function (msg: MessageEvent) {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-            action: string;
-            data: string;
-          })
+          action: string;
+          data: string;
+        })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
