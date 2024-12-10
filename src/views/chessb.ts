@@ -11,8 +11,8 @@ import "chessboard-element";
  * @slot - This element has a slot
  * @csspart button - The button
  */
-@customElement("chess-element")
-export class ChessElement extends LitElement {
+@customElement("chessb-element")
+export class ChessBElement extends LitElement {
   @query("chess-board")
   _chessBoard: any;
   @query("#status")
@@ -22,7 +22,7 @@ export class ChessElement extends LitElement {
   @query("#fen")
   _fen: any;
   @property({ type: String })
-  orientation = "white";
+  orientation = "black";
 
   @property({ type: Number })
   count = 0;
@@ -108,17 +108,14 @@ export class ChessElement extends LitElement {
       }
     };
 
-    // this.ws.onopen = () => {
-    //   console.log(this.orientation);
+    this.ws.onopen = () => {
+      console.log(this.orientation);
 
-    //   if (this.orientation == "black") {
-    //     const fen = { action: "onMove", data: this.game.fen() };
-    //     this.ws.send(JSON.stringify(fen));
-    //     // this.ws.send(
-    //     //   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    //     // );
-    //   }
-    // };
+      if (this.orientation == "black") {
+        const fen = { action: "onMove", data: this.game.fen() };
+        this.ws.send(JSON.stringify(fen));
+      }
+    };
   }
 
   async disconnectedCallback() {
@@ -200,6 +197,6 @@ export class ChessElement extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "chess-element": ChessElement;
+    "chessb-element": ChessBElement;
   }
 }

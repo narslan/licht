@@ -1,6 +1,7 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "./views/chess";
+import "./views/chessb";
 import "./views/home";
 import "./views/random";
 
@@ -27,6 +28,7 @@ export class MainLayout extends LitElement {
       { path: "/", component: "home-element" },
       { path: "/home", component: "home-element" },
       { path: "/chess", component: "chess-element" },
+      { path: "/black", component: "chessb-element" },
       { path: "/random", component: "random-number-element" },
       {
         path: "(.*)",
@@ -49,7 +51,12 @@ export class MainLayout extends LitElement {
             <md-divider></md-divider>
 
             <md-list-item @click=${() => this.switchRoute("chess")}>
-              Chess
+              Play White
+            </md-list-item>
+            <md-divider></md-divider>
+
+            <md-list-item @click=${() => this.switchRoute("black")}>
+              Play Black
             </md-list-item>
             <md-divider></md-divider>
 
