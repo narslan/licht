@@ -89,9 +89,11 @@ export class EngineMatch extends LitElement {
       if (action === "onConnect") {
         this.engine_id = data;
       } else if (action === "onMove") {
+
         if (data.length == 4 || data.length == 5) {
           const from = data.slice(0, 2);
           const to = data.slice(2, 4);
+          console.log(this.game.fen());
 
           try {
             this.game.move({
@@ -99,9 +101,9 @@ export class EngineMatch extends LitElement {
               to: to,
               promotion: "q", // NOTE: always promote to a queen
             });
-            const fen = { action: "onMove", fen: this.game.fen() };
-            this.ws.send(JSON.stringify(fen));
             this.updateStatus();
+            const fen = { action: "onMove", data: this.game.fen() };
+            this.ws.send(JSON.stringify(fen));
           } catch (error) {
             console.log("error from server", error);
           }
@@ -110,8 +112,7 @@ export class EngineMatch extends LitElement {
     };
 
     this.ws.onopen = () => {
-      console.log(this.orientation);
-      const fen = { action: "onOpen", fen: this.game.fen() };
+      const fen = { action: "onOpen", data: this.game.fen() };
       this.ws.send(JSON.stringify(fen));
     };
   }
@@ -139,24 +140,26 @@ export class EngineMatch extends LitElement {
   }
 
   private _onDrop(e: CustomEvent) {
-    const { source, target, setAction } = e.detail;
+    console.log(e);
 
-    try {
-      this.game.move({
-        from: source,
-        to: target,
-        promotion: "q", // NOTE: always promote to a queen
-      });
-      const fen = { action: "onMove", data: this.game.fen() };
-      this.ws.send(JSON.stringify(fen));
-      this.updateStatus();
-    } catch (error) {
-      setAction("snapback");
-    }
+    // const { source, target, setAction } = e.detail;
+
+    // try {
+    //   this.game.move({
+    //     from: source,
+    //     to: target,
+    //     promotion: "q", // NOTE: always promote to a queen
+    //   });
+    //   const fen = { action: "onMove", data: this.game.fen() };
+    //   this.ws.send(JSON.stringify(fen));
+    //   this.updateStatus();
+    // } catch (error) {
+    //   setAction("snapback");
+    // }
   }
 
   private _onSnapEnd() {
-    this._chessBoard.setPosition(this.game.fen());
+    //this._chessBoard.setPosition(this.game.fen());
   }
 
   private updateStatus() {
