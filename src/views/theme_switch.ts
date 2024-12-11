@@ -1,15 +1,25 @@
-import { LitElement, css, html } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
-import { Chess } from "chess.js";
+import { LitElement, html, css } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("theme-switch")
-export class ChessElement extends LitElement {
+export class ThemeSwitch extends LitElement {
 
   @property({ type: String, reflect: true })
   theme = 'light';
+  static styles = [
+    css`
+      :host {
+        display: block;
+      }
+    `,
+  ];
 
-
-
-
-
+  render() {
+    return html` <p>theme switch</p>      `;
+  }
+}
+declare global {
+  interface HTMLElementTagNameMap {
+    "theme-switch": ThemeSwitch;
+  }
 }

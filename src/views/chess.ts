@@ -46,7 +46,7 @@ export class ChessElement extends LitElement {
             @drag-start="${this._onDragStart}"
             @drop="${this._onDrop}"
             @snap-end="${this._onSnapEnd}"
-            style="width: 800px"
+            style="width: 600px"
             position="start"
             orientation="${this.orientation}"
             draggable-pieces
@@ -81,9 +81,9 @@ export class ChessElement extends LitElement {
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-            action: string;
-            data: string;
-          })
+          action: string;
+          data: string;
+        })
         : { action: "", data: "" };
 
       if (action === "onConnect") {

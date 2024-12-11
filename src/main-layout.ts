@@ -44,23 +44,23 @@ export class MainLayout extends LitElement {
     return html`
       <div id="container">
         <div id="lsidebar">
-          <md-list style="max-width: 300px;">
-            <md-list-item @click=${() => this.switchRoute("")}>
+          <md-list style="max-width: 150px;">
+            <md-list-item class="md-typescale-body-medium" @click=${() => this.switchRoute("")}>
               Home
             </md-list-item>
             <md-divider></md-divider>
 
-            <md-list-item @click=${() => this.switchRoute("chess")}>
+            <md-list-item class="md-typescale-body-medium"  @click=${() => this.switchRoute("chess")}>
               Play White
             </md-list-item>
             <md-divider></md-divider>
 
-            <md-list-item @click=${() => this.switchRoute("black")}>
+            <md-list-item class="md-typescale-body-medium"  @click=${() => this.switchRoute("black")}>
               Play Black
             </md-list-item>
             <md-divider></md-divider>
 
-            <md-list-item @click=${() => this.switchRoute("random")}>
+            <md-list-item class="md-typescale-body-medium"  @click=${() => this.switchRoute("random")}>
               Random
             </md-list-item>
             <md-divider></md-divider>
@@ -87,10 +87,6 @@ export class MainLayout extends LitElement {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  toggleHamburger() {
-    this.openDrawer = !this.openDrawer;
-  }
-
   static styles = [
     typescaleStyles,
     css`
@@ -98,7 +94,7 @@ export class MainLayout extends LitElement {
         display: flex;
       }
       #lsidebar {
-        width: 300px;
+        width: 150px;
       }
     `,
   ];
