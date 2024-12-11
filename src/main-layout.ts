@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import "./views/chess";
 import "./views/chessb";
 import "./views/home";
-import "./views/random";
+import "./views/engine-match";
 
 import "@material/web/tabs/tabs";
 import "@material/web/list/list";
@@ -29,7 +29,7 @@ export class MainLayout extends LitElement {
       { path: "/home", component: "home-element" },
       { path: "/chess", component: "chess-element" },
       { path: "/black", component: "chessb-element" },
-      { path: "/random", component: "random-number-element" },
+      { path: "/match", component: "engine-match" },
       {
         path: "(.*)",
         redirect: "/",
@@ -60,8 +60,8 @@ export class MainLayout extends LitElement {
             </md-list-item>
             <md-divider></md-divider>
 
-            <md-list-item class="md-typescale-body-medium"  @click=${() => this.switchRoute("random")}>
-              Random
+            <md-list-item class="md-typescale-body-medium"  @click=${() => this.switchRoute("match")}>
+              Engines Match
             </md-list-item>
             <md-divider></md-divider>
           </md-list>

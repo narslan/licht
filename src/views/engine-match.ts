@@ -31,7 +31,7 @@ export class EngineMatch extends LitElement {
   @property({ type: Chess })
   game = new Chess();
   @property({ type: WebSocket })
-  ws = new WebSocket(`ws://localhost:8000/_home`);
+  ws = new WebSocket(`ws://localhost:8000/_game`);
 
   static styles = css`
     #chessboard {
