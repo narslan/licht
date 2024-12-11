@@ -1,3 +1,5 @@
+// Must use ?inline because ?inline prevents vite from inserting the styles in
+// a <style> the <head>
 import { LitElement, css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { Chess } from "chess.js";
@@ -9,8 +11,8 @@ import "chessboard-element";
  * @slot - This element has a slot
  * @csspart button - The button
  */
-@customElement("chessb-element")
-export class ChessBElement extends LitElement {
+@customElement("engine-match")
+export class EngineMatch extends LitElement {
   @query("chess-board")
   _chessBoard: any;
   @query("#status")
@@ -29,7 +31,7 @@ export class ChessBElement extends LitElement {
   @property({ type: Chess })
   game = new Chess();
   @property({ type: WebSocket })
-  ws = new WebSocket(`ws://localhost:8000/_uci`);
+  ws = new WebSocket(`ws://localhost:8000/_home`);
 
   static styles = css`
     #chessboard {
@@ -97,7 +99,8 @@ export class ChessBElement extends LitElement {
               to: to,
               promotion: "q", // NOTE: always promote to a queen
             });
-
+            const fen = { action: "onMove", fen: this.game.fen() };
+            this.ws.send(JSON.stringify(fen));
             this.updateStatus();
           } catch (error) {
             console.log("error from server", error);
@@ -108,11 +111,8 @@ export class ChessBElement extends LitElement {
 
     this.ws.onopen = () => {
       console.log(this.orientation);
-
-      if (this.orientation == "black") {
-        const fen = { action: "onMove", data: this.game.fen() };
-        this.ws.send(JSON.stringify(fen));
-      }
+      const fen = { action: "onOpen", fen: this.game.fen() };
+      this.ws.send(JSON.stringify(fen));
     };
   }
 
@@ -195,6 +195,6 @@ export class ChessBElement extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "chessb-element": ChessBElement;
+    "engine-match": EngineMatch;
   }
 }

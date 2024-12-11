@@ -11,7 +11,7 @@ export class RandomNumberElement extends LitElement {
 
   render() {
     return html` <h1>Random</h1>
-      <p>This is the random page.</p>`;
+      <p>This is a random page.</p>`;
   }
 }
 customElements.define("random-number-element", RandomNumberElement);
