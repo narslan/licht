@@ -42,6 +42,22 @@ export class HomeElement extends LitElement {
 
       <md-outlined-button>Back</md-outlined-button>
       <md-filled-button>Next</md-filled-button>
+<form id="theme">
+  <label>
+    Auto 
+    <input type="radio" name="theme" value="auto" checked>
+  </label>
+  <label>
+    Light 
+    <input type="radio" name="theme" value="light">
+  </label>
+  <label>
+    Dark 
+    <input type="radio" name="theme" value="dark">
+  </label>
+</form>
+
+
     `;
   }
 
@@ -61,9 +77,9 @@ export class HomeElement extends LitElement {
     this.ws.onmessage = function (msg: MessageEvent) {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-            action: string;
-            data: string;
-          })
+          action: string;
+          data: string;
+        })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
