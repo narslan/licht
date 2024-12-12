@@ -41,7 +41,7 @@ export class EngineMatch extends LitElement {
 
   render() {
     return html`
-      <div id="chessboard" style="display:flex ">
+      <div id="chessboard">
         <div>
           <chess-board
             @drag-start="${this._onDragStart}"
@@ -62,7 +62,7 @@ export class EngineMatch extends LitElement {
           </p>
         </div>
         <div
-          style="display:flex; flex-direction: column; flex-wrap: wrap; width: 200px;  "
+          style="display:flex; flex-direction: column; flex-wrap: wrap; width: 200px; "
         >
           <div id="status"></div>
 
@@ -105,6 +105,7 @@ export class EngineMatch extends LitElement {
             this.updateStatus();
 
             if (!this.game.isDraw()) {
+              //? the above line dubious, what should I do here?
               const fen = { action: "onMove", data: this.game.fen() };
               this.ws.send(JSON.stringify(fen));
             }

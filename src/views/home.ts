@@ -6,7 +6,11 @@ import { Chess } from "chess.js";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "./chess";
+
 document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
+
+import "@weblogin/trendchart-elements";
+
 /**
  * An example element.
  *
@@ -18,16 +22,16 @@ export class HomeElement extends LitElement {
   /**
    * The number of times the button has been clicked.
    */
-  @property({ type: Number })
+  @property({ type: Number, attribute: false })
   count = 0;
 
-  @property({ type: String })
+  @property({ type: String, attribute: false })
   engine_id?: string;
 
-  @property({ type: Chess })
+  @property({ type: Chess, attribute: false })
   game = new Chess();
 
-  @property({ type: WebSocket })
+  @property({ type: WebSocket, attribute: false })
   ws = new WebSocket(`ws://localhost:8000/_home`);
 
   @property({ type: String })
@@ -42,22 +46,20 @@ export class HomeElement extends LitElement {
 
       <md-outlined-button>Back</md-outlined-button>
       <md-filled-button>Next</md-filled-button>
-<form id="theme">
-  <label>
-    Auto 
-    <input type="radio" name="theme" value="auto" checked>
-  </label>
-  <label>
-    Light 
-    <input type="radio" name="theme" value="light">
-  </label>
-  <label>
-    Dark 
-    <input type="radio" name="theme" value="dark">
-  </label>
-</form>
-
-
+      <tc-line
+        class="chart"
+        values="[26,22,20,24,30,34,18,29,33,41,38,45,32,25,19,28,22,18,19,24,22,21,32,34,36,40]"
+        weight="3"
+        point="11"
+        style="width:400px;--shape-color:rgb(51 48 39); "
+      ></tc-line>
+      <tc-line
+        class="chart"
+        values="[26,22,20,24,30,34,18,29,33,41,38,45,32,25,19,28,22,18,19,24,22,21,32,34,36,40]"
+        weight="3"
+        point="11"
+        style="width:400px;--shape-color:rgb(105 0 5);"
+      ></tc-line>
     `;
   }
 
@@ -77,9 +79,9 @@ export class HomeElement extends LitElement {
     this.ws.onmessage = function (msg: MessageEvent) {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-          action: string;
-          data: string;
-        })
+            action: string;
+            data: string;
+          })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
@@ -99,6 +101,10 @@ export class HomeElement extends LitElement {
       label {
         font-family: "Open Sans";
       }
+        .chart{
+        --point-inner-color=rgb(105 0 5);
+        }
+        
     `,
   ];
 }
