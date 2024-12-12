@@ -4,6 +4,7 @@ import "./views/chess";
 import "./views/chessb";
 import "./views/home";
 import "./views/engine-match";
+import "./views/pgn";
 
 import "@material/web/tabs/tabs";
 import "@material/web/list/list";
@@ -30,6 +31,7 @@ export class MainLayout extends LitElement {
       { path: "/chess", component: "chess-element" },
       { path: "/black", component: "chessb-element" },
       { path: "/match", component: "engine-match" },
+      { path: "/pgn", component: "pgn-view" },
       {
         path: "(.*)",
         redirect: "/",
@@ -45,23 +47,43 @@ export class MainLayout extends LitElement {
       <div id="container">
         <div id="lsidebar">
           <md-list style="max-width: 150px;">
-            <md-list-item class="md-typescale-body-medium" @click=${() => this.switchRoute("")}>
+            <md-list-item
+              class="md-typescale-body-medium"
+              @click=${() => this.switchRoute("")}
+            >
               Home
             </md-list-item>
             <md-divider></md-divider>
 
-            <md-list-item class="md-typescale-body-medium"  @click=${() => this.switchRoute("chess")}>
+            <md-list-item
+              class="md-typescale-body-medium"
+              @click=${() => this.switchRoute("chess")}
+            >
               Play White
             </md-list-item>
             <md-divider></md-divider>
 
-            <md-list-item class="md-typescale-body-medium"  @click=${() => this.switchRoute("black")}>
+            <md-list-item
+              class="md-typescale-body-medium"
+              @click=${() => this.switchRoute("black")}
+            >
               Play Black
             </md-list-item>
             <md-divider></md-divider>
 
-            <md-list-item class="md-typescale-body-medium"  @click=${() => this.switchRoute("match")}>
+            <md-list-item
+              class="md-typescale-body-medium"
+              @click=${() => this.switchRoute("match")}
+            >
               Engines Match
+            </md-list-item>
+            <md-divider></md-divider>
+
+            <md-list-item
+              class="md-typescale-body-medium"
+              @click=${() => this.switchRoute("pgn")}
+            >
+              PGN View
             </md-list-item>
             <md-divider></md-divider>
           </md-list>

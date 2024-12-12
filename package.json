@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@material/web": "^2.2.0",
+    "@mliebelt/pgn-parser": "^1.4.15",
     "@vaadin/router": "^2.0.0",
     "@vaadin/vaadin-tabs": "^23.5.10",
     "@weblogin/trendchart-elements": "^2.0.1",
