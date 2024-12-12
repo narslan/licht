@@ -34,7 +34,8 @@ export class EngineMatch extends LitElement {
   ws = new WebSocket(`ws://localhost:8000/_game`);
 
   static styles = css`
-    #chessboard {
+    #pgn {
+      width: 400px;
     }
   `;
 
@@ -49,6 +50,7 @@ export class EngineMatch extends LitElement {
             style="width: 600px"
             position="start"
             orientation="${this.orientation}"
+            move-speed="slow"
             draggable-pieces
           >
           </chess-board>
@@ -81,15 +83,14 @@ export class EngineMatch extends LitElement {
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-          action: string;
-          data: string;
-        })
+            action: string;
+            data: string;
+          })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
         this.engine_id = data;
       } else if (action === "onMove") {
-
         if (data.length == 4 || data.length == 5) {
           const from = data.slice(0, 2);
           const to = data.slice(2, 4);
@@ -102,8 +103,11 @@ export class EngineMatch extends LitElement {
               promotion: "q", // NOTE: always promote to a queen
             });
             this.updateStatus();
-            const fen = { action: "onMove", data: this.game.fen() };
-            this.ws.send(JSON.stringify(fen));
+
+            if (!this.game.isDraw()) {
+              const fen = { action: "onMove", data: this.game.fen() };
+              this.ws.send(JSON.stringify(fen));
+            }
           } catch (error) {
             console.log("error from server", error);
           }
@@ -126,6 +130,11 @@ export class EngineMatch extends LitElement {
     const { piece } = e.detail;
 
     if (this.game.isGameOver()) {
+      e.preventDefault();
+      return;
+    }
+
+    if (this.game.isDraw()) {
       e.preventDefault();
       return;
     }
