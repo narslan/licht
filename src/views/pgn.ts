@@ -3,7 +3,7 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { Chess } from "chess.js";
-import { parse } from "@mliebelt/pgn-parser";
+import tokenize from './tokenizer'
 import "chessboard-element";
 /**
  * An example element.
@@ -38,7 +38,7 @@ export class PGNView extends LitElement {
 
   static styles = css`
     #pgn {
-      width: 400px;
+      width: 800px;
     }
   `;
 
@@ -150,17 +150,14 @@ export class PGNView extends LitElement {
         status += `, ${moveColor} is in check`;
       }
     }
-    this._chessBoard.setPosition(this.game.fen());
-    this._status.innerHTML = status;
-    this._fen.innerHTML = this.game.fen();
-    this._pgn.innerHTML = this.game.pgn();
-    this._parse.innerHTML = JSON.stringify(
-      parse(this.game.pgn() + " * ", {
-        startRule: "game",
-      }),
-      null,
-      2
-    );
+			this._chessBoard.setPosition(this.game.fen());
+			this._status.innerHTML = status;
+			this._fen.innerHTML = this.game.fen();
+			this._pgn.innerHTML = this.game.pgn();
+			
+			const test = '^aaaa^bbbb*'
+			const result = tokenize(test)
+			this._parse.innerHTML = JSON.stringify(result, null, 2);
   }
 
   firstUpdated() {
