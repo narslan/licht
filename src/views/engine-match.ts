@@ -44,9 +44,6 @@ export class EngineMatch extends LitElement {
       <div id="chessboard">
         <div>
           <chess-board
-            @drag-start="${this._onDragStart}"
-            @drop="${this._onDrop}"
-            @snap-end="${this._onSnapEnd}"
             style="width: 600px"
             position="start"
             orientation="${this.orientation}"
@@ -94,7 +91,7 @@ export class EngineMatch extends LitElement {
         if (data.length == 4 || data.length == 5) {
           const from = data.slice(0, 2);
           const to = data.slice(2, 4);
-          console.log(this.game.fen());
+          //console.log(this.game.fen());
 
           try {
             this.game.move({
@@ -110,7 +107,7 @@ export class EngineMatch extends LitElement {
               this.ws.send(JSON.stringify(fen));
             }
           } catch (error) {
-            console.log("error from server", error);
+            //console.log("error from server", error);
           }
         }
       }
@@ -125,51 +122,6 @@ export class EngineMatch extends LitElement {
   async disconnectedCallback() {
     super.disconnectedCallback();
     this.ws.close();
-  }
-
-  private _onDragStart(e: CustomEvent) {
-    const { piece } = e.detail;
-
-    if (this.game.isGameOver()) {
-      e.preventDefault();
-      return;
-    }
-
-    if (this.game.isDraw()) {
-      e.preventDefault();
-      return;
-    }
-    // only pick up pieces for the side to move
-    if (
-      (this.game.turn() === "w" && piece.search(/^b/) !== -1) ||
-      (this.game.turn() === "b" && piece.search(/^w/) !== -1)
-    ) {
-      e.preventDefault();
-      return;
-    }
-  }
-
-  private _onDrop(e: CustomEvent) {
-    console.log(e);
-
-    // const { source, target, setAction } = e.detail;
-
-    // try {
-    //   this.game.move({
-    //     from: source,
-    //     to: target,
-    //     promotion: "q", // NOTE: always promote to a queen
-    //   });
-    //   const fen = { action: "onMove", data: this.game.fen() };
-    //   this.ws.send(JSON.stringify(fen));
-    //   this.updateStatus();
-    // } catch (error) {
-    //   setAction("snapback");
-    // }
-  }
-
-  private _onSnapEnd() {
-    //this._chessBoard.setPosition(this.game.fen());
   }
 
   private updateStatus() {

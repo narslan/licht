@@ -67,13 +67,6 @@ export class HomeElement extends LitElement {
     super.connectedCallback();
     await this.updateComplete;
 
-    this.ws.onerror = function (event: Event) {
-      console.log(event);
-    };
-
-    this.ws.onopen = function (event: Event) {
-      console.log(event);
-    };
     const that = this;
 
     this.ws.onmessage = function (msg: MessageEvent) {

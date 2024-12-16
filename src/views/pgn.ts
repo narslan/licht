@@ -3,7 +3,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { Chess } from "chess.js";
-import tokenize from './tokenizer'
 import "chessboard-element";
 /**
  * An example element.
@@ -33,8 +32,8 @@ export class PGNView extends LitElement {
   engine_id = "";
   @property({ type: Chess })
   game = new Chess();
-  //   @property({ type: WebSocket })
-  //   ws = new WebSocket(`ws://localhost:8000/_pgn`);
+  @property({ type: WebSocket })
+  ws = new WebSocket(`ws://localhost:8000/_pgn`);
 
   static styles = css`
     #pgn {
@@ -155,9 +154,9 @@ export class PGNView extends LitElement {
 			this._fen.innerHTML = this.game.fen();
 			this._pgn.innerHTML = this.game.pgn();
 			
-			const test = '^aaaa^bbbb*'
-			const result = tokenize(test)
-			this._parse.innerHTML = JSON.stringify(result, null, 2);
+			
+			
+			// this._parse.innerHTML = JSON.stringify(result, null, 2);
   }
 
   firstUpdated() {
