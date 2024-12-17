@@ -3,6 +3,10 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { Chess } from "chess.js";
+import "@material/web/list/list.js";
+import "@material/web/list/list-item.js";
+import "@material/web/divider/divider.js";
+
 import "chessboard-element";
 /**
  * An example element.
@@ -22,6 +26,8 @@ export class PGNView extends LitElement {
   _fen: any;
   @query("#parse")
   _parse: any;
+  @query("#database_id")
+  _database_id: any;
 
   @property({ type: String })
   orientation = "black";
@@ -34,15 +40,26 @@ export class PGNView extends LitElement {
   game = new Chess();
   @property({ type: WebSocket })
   ws = new WebSocket(`ws://localhost:8000/_pgn`);
+  @property({ type: Array })
+  moves = [];
 
   static styles = css`
     #pgn {
       width: 800px;
     }
+
+    md-list {
+      border-radius: 8px;
+      outline: 1px solid var(--md-sys-color-outline);
+      max-width: 360px;
+      overflow: hidden;
+      width: 100%;
+    }
   `;
 
   render() {
     return html`
+      <div id="database_id"></div>
       <div id="chessboard">
         <div>
           <chess-board
@@ -57,6 +74,7 @@ export class PGNView extends LitElement {
           >
           </chess-board>
           <div id="fen"></div>
+
           <p>
             <button @click=${this._dispatchChangeOrientation}>
               Change Sides
@@ -119,6 +137,55 @@ export class PGNView extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     await this.updateComplete;
+
+    this.ws.onmessage = (msg: MessageEvent) => {
+      const { action, data } = msg.data.startsWith("{")
+        ? (JSON.parse(msg.data) as {
+            action: string;
+            data: {
+              moves: string;
+              db: string;
+            };
+          })
+        : { action: "", data: { moves: "", db: "" } };
+
+      if (action === "onConnect") {
+        this.engine_id = data.db;
+        this._database_id.innerHTML = data.db;
+        console.log(data.moves);
+        this.moves = data.moves.split(" ").filter((word) => word.length > 0);
+
+        const movesList = this.moves.map((element, index) => {
+          return `<md-list-item> ${index + 1}. ${element} </md-list-item>`;
+        });
+
+        this._pgn.innerHTML = `<md-list style="max-width: 160px;">
+          ${movesList}
+        </md-list>`;
+      } else if (action === "onMove") {
+        if (data.moves.length == 4 || data.moves.length == 5) {
+          const from = data.moves.slice(0, 2);
+          const to = data.moves.slice(2, 4);
+
+          try {
+            this.game.move({
+              from: from,
+              to: to,
+              promotion: "q", // NOTE: always promote to a queen
+            });
+            this.updateStatus();
+
+            if (!this.game.isGameOver()) {
+              //? the above line dubious, what should I do here?
+              const fen = { action: "onMove", data: this.game.fen() };
+              this.ws.send(JSON.stringify(fen));
+            }
+          } catch (error) {
+            //console.log("error from server", error);
+          }
+        }
+      }
+    };
   }
 
   async disconnectedCallback() {
@@ -149,14 +216,9 @@ export class PGNView extends LitElement {
         status += `, ${moveColor} is in check`;
       }
     }
-			this._chessBoard.setPosition(this.game.fen());
-			this._status.innerHTML = status;
-			this._fen.innerHTML = this.game.fen();
-			this._pgn.innerHTML = this.game.pgn();
-			
-			
-			
-			// this._parse.innerHTML = JSON.stringify(result, null, 2);
+    this._chessBoard.setPosition(this.game.fen());
+    this._status.innerHTML = status;
+    this._fen.innerHTML = this.game.fen();
   }
 
   firstUpdated() {
