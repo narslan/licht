@@ -12,20 +12,22 @@ export class PGNFEN extends LitElement {
   @property({ type: String })
   color = "white";
   @property({ type: String })
-  afterMove = "";
+  beforeMove = "";
   @property({ type: Number })
   index = 0;
+  @property({ type: String })
+  move = "";
 
   render() {
-    return html`<md-list-item"> ${this.index}. ${this.afterMove} </md-list-item>
+    return html`<md-list-item"> ${this.index}. ${this.move} </md-list-item>
     <md-divider></md-divider>`;
   }
 
   static styles = [
     typescaleStyles,
     css`
-      md-list-item {
-        font-size: 0.4rem;
+      :host {
+        font-size: 0.2rem;
       }
     `,
   ];

@@ -23,8 +23,8 @@ import "./pgn_fen";
  * @slot - This element has a slot
  * @csspart button - The button
  */
-@customElement("pgn_client-view")
-export class PGNClientView extends LitElement {
+@customElement("pgn_client-element")
+export class PGNClient extends LitElement {
   @query("chess-board")
   _chessBoard: any;
   @query("#status")
@@ -33,8 +33,7 @@ export class PGNClientView extends LitElement {
   _pgn: any;
   @query("#fen")
   _fen: any;
-  @query("#parse")
-  _parse: any;
+
   @query("#database_id")
   _database_id: any;
 
@@ -64,6 +63,10 @@ export class PGNClientView extends LitElement {
       overflow: hidden;
       width: 100%;
     }
+
+    #chessboard {
+      display: flex;
+    }
   `;
 
   render() {
@@ -91,12 +94,11 @@ export class PGNClientView extends LitElement {
           </p>
         </div>
         <div
-          style="display:flex; flex-direction: column; flex-wrap: wrap; width: 200px; "
+          style="display:flex; flex-direction: column; flex-wrap: wrap; width: 400px;  margin-left: 10px; "
         >
           <div id="status"></div>
 
           <div id="pgn" style="text-align: left;"></div>
-          <code id="parse" style="text-align: left;"></code>
         </div>
       </div>
     `;
@@ -168,7 +170,10 @@ export class PGNClientView extends LitElement {
         const movesList = this.game
           .history({ verbose: true })
           .map((element, index) => {
-            return `<pgn_fen-element index=${index} afterMove=${element} ></pgn_fen-element>
+            return `<pgn_fen-element index="${index + 1}"
+             afterMove="${element["before"]} move="${
+              element["san"]
+            }" ></pgn_fen-element>
             `;
           })
           .join("");
@@ -204,7 +209,7 @@ export class PGNClientView extends LitElement {
 
   async disconnectedCallback() {
     super.disconnectedCallback();
-    //  this.ws.close();
+    this.ws.close();
   }
 
   private updateStatus() {
@@ -232,7 +237,6 @@ export class PGNClientView extends LitElement {
     }
     this._chessBoard.setPosition(this.game.fen());
     this._status.innerHTML = status;
-    this._fen.innerHTML = this.game.fen();
   }
 
   firstUpdated() {
@@ -242,6 +246,6 @@ export class PGNClientView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pgn_client-view": PGNClientView;
+    "pgn_client-element": PGNClient;
   }
 }

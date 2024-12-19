@@ -187,7 +187,7 @@ export class PGNServer extends LitElement {
 
   async disconnectedCallback() {
     super.disconnectedCallback();
-    //  this.ws.close();
+    this.ws.close();
   }
 
   private updateStatus() {
