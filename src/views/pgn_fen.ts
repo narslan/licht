@@ -15,6 +15,9 @@ export class PGNFEN extends LitElement {
   index = 0;
   @property({ type: String })
   move = "";
+  
+  
+
 
   render() {
     return html`<md-list-item>
@@ -36,17 +39,16 @@ export class PGNFEN extends LitElement {
 
     private _setBoard() {
       const fen = this.beforeMove;
+      console.log(fen);
+      
       if (fen) {
-        const event = new CustomEvent('myfen', {
+       const ws = new WebSocket(`ws://localhost:8000/_hamlet`);
+       
+    this.ws.onopen = () => {
+      const fen = { action: "onOpen", data: fen };
+      this.ws.send(JSON.stringify(fen));
+    }
 
-          detail: {
-        
-            message: 'Something important happened'
-        
-          }, 
-        
-        });
-        this.dispatchEvent(event);
       }
     }
 }
