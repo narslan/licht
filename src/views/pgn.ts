@@ -155,11 +155,13 @@ export class PGNView extends LitElement {
         console.log(data.moves);
         this.moves = data.moves.split(" ").filter((word) => word.length > 0);
 
-        const movesList = this.moves.map((element, index) => {
-          return `<md-list-item> ${index + 1}. ${element} </md-list-item>`;
-        });
+        const movesList = this.moves
+          .map((element, index) => {
+            return `<md-list-item> ${index + 1}. ${element} </md-list-item>`;
+          })
+          .join("");
 
-        this._pgn.innerHTML = `<md-list style="max-width: 160px;">
+        this._pgn.innerHTML = `<md-list style="max-width: 180px;">
           ${movesList}
         </md-list>`;
       } else if (action === "onMove") {
