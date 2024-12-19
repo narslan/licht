@@ -91,10 +91,7 @@ export class HomeElement extends LitElement {
   static styles = [
     typescaleStyles,
     css`
-      label {
-        font-family: "Open Sans";
-      }
-        .chart{
+      .chart{
         --point-inner-color=rgb(105 0 5);
         }
         
