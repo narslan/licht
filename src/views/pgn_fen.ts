@@ -10,8 +10,6 @@ document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
 @customElement("pgn_fen-element")
 export class PGNFEN extends LitElement {
   @property({ type: String })
-  color = "white";
-  @property({ type: String })
   beforeMove = "";
   @property({ type: Number })
   index = 0;
@@ -19,8 +17,10 @@ export class PGNFEN extends LitElement {
   move = "";
 
   render() {
-    return html`<md-list-item"> ${this.index}. ${this.move} </md-list-item>
-    <md-divider></md-divider>`;
+    return html`<md-list-item>
+    <div slot="headline" @click="${this._setBoard}">${this.index}. ${this.move}</div>
+    </md-list-item>
+      <md-divider></md-divider>`;
   }
 
   static styles = [
@@ -31,6 +31,24 @@ export class PGNFEN extends LitElement {
       }
     `,
   ];
+
+
+
+    private _setBoard() {
+      const fen = this.beforeMove;
+      if (fen) {
+        const event = new CustomEvent('myfen', {
+
+          detail: {
+        
+            message: 'Something important happened'
+        
+          }
+        
+        });
+        this.dispatchEvent(event);
+      }
+    }
 }
 
 declare global {

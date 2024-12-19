@@ -1,9 +1,3 @@
-const chess = new Chess();
-
-chess.loadPgn(
-  "1. e4 e5 {king's pawn opening} 2. Nf3 Nc6 3. Bc4 Bc5 {giuoco piano} *"
-);
-
 // Must use ?inline because ?inline prevents vite from inserting the styles in
 // a <style> the <head>
 import { LitElement, css, html } from "lit";
@@ -17,12 +11,6 @@ import "chessboard-element";
 
 import "./pgn_fen";
 
-/**
- * An example element.
- *
- * @slot - This element has a slot
- * @csspart button - The button
- */
 @customElement("pgn_client-element")
 export class PGNClient extends LitElement {
   @query("chess-board")
@@ -104,6 +92,20 @@ export class PGNClient extends LitElement {
     `;
   }
 
+  constructor() {
+    super();
+   // this.addEventListener('myfen', (e) => console.log(e.type, e.target));
+ 
+  }
+
+  protected createRenderRoot() {
+    const root = super.createRenderRoot();
+    root.addEventListener('myfen',
+      (e: Event) => this.shadowName = (e.target as Element).localName);
+    return root;
+  }
+
+
   _dispatchChangeOrientation() {
     this.orientation = this.orientation === "black" ? "white" : "black";
   }
@@ -163,24 +165,22 @@ export class PGNClient extends LitElement {
       if (action === "onConnect") {
         this.engine_id = data.db;
         this._database_id.innerHTML = data.db;
-        console.log(data.moves);
+       
         this.game.loadPgn(data.moves);
         //this.moves = data.moves.split(" ").filter((word) => word.length > 0);
 
         const movesList = this.game
           .history({ verbose: true })
           .map((element, index) => {
-            return `<pgn_fen-element index="${index + 1}"
-             afterMove="${element["before"]} move="${
-              element["san"]
-            }" ></pgn_fen-element>
+           
+            return `<pgn_fen-element  index="${index + 1}" beforeMove="${element["before"]}" move="${element["san"]}" ></pgn_fen-element>
             `;
           })
           .join("");
 
-        this._pgn.innerHTML = `<md-list>
-          ${movesList}
-        </md-list>`;
+        this._pgn.innerHTML= `<md-list>  ${movesList}  </md-list>`;
+
+        
       } else if (action === "onMove") {
         if (data.moves.length == 4 || data.moves.length == 5) {
           const from = data.moves.slice(0, 2);
@@ -206,6 +206,11 @@ export class PGNClient extends LitElement {
       }
     };
   }
+
+  // private _fenListener(e: CustomEvent) {
+  //   console.log("custom event",e);
+    
+  // }
 
   async disconnectedCallback() {
     super.disconnectedCallback();
