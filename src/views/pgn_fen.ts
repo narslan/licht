@@ -43,7 +43,7 @@ export class PGNFEN extends LitElement {
         
             message: 'Something important happened'
         
-          }
+          }, 
         
         });
         this.dispatchEvent(event);
