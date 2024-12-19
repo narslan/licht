@@ -4,7 +4,8 @@ import "./views/chess";
 import "./views/chessb";
 import "./views/home";
 import "./views/engine-match";
-import "./views/pgn";
+import "./views/pgn_server"; // pgn comes from the server.
+import "./views/pgn_client"; // pgn comes from the client.
 
 import "@material/web/tabs/tabs";
 import "@material/web/list/list";
@@ -26,17 +27,18 @@ export class MainLayout extends LitElement {
   firstUpdated() {
     const router = new Router(this.shadowRoot.querySelector("main"));
     router.setRoutes([
-      { path: "/", component: "pgn-view" },
+      { path: "/", component: "home-element" },
       { path: "/home", component: "home-element" },
       { path: "/chess", component: "chess-element" },
       { path: "/black", component: "chessb-element" },
       { path: "/match", component: "engine-match" },
-      { path: "/pgn", component: "pgn-view" },
+      { path: "/pgn_server", component: "pgn_server-element" },
+      { path: "/pgn_client", component: "pgn_client-element" },
       {
         path: "(.*)",
         redirect: "/",
         action: () => {
-          this.activeTab = "pgn-view";
+          this.activeTab = "home-element";
         },
       },
     ]);
@@ -81,11 +83,17 @@ export class MainLayout extends LitElement {
 
             <md-list-item
               class="md-typescale-body-medium"
-              @click=${() => this.switchRoute("pgn")}
+              @click=${() => this.switchRoute("pgn_server")}
             >
-              PGN View
+              PGN Server View
             </md-list-item>
             <md-divider></md-divider>
+            <md-list-item
+              class="md-typescale-body-medium"
+              @click=${() => this.switchRoute("pgn_client")}
+            >
+              PGN Client View
+            </md-list-item>
           </md-list>
         </div>
 
@@ -116,7 +124,7 @@ export class MainLayout extends LitElement {
         display: flex;
       }
       #lsidebar {
-        width: 150px;
+        width: 250px;
       }
     `,
   ];

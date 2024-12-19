@@ -8,14 +8,9 @@ import "@material/web/list/list-item.js";
 import "@material/web/divider/divider.js";
 
 import "chessboard-element";
-/**
- * An example element.
- *
- * @slot - This element has a slot
- * @csspart button - The button
- */
-@customElement("pgn-view")
-export class PGNView extends LitElement {
+
+@customElement("pgn_server-element")
+export class PGNServer extends LitElement {
   @query("chess-board")
   _chessBoard: any;
   @query("#status")
@@ -230,6 +225,6 @@ export class PGNView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pgn-view": PGNView;
+    "pgn_server-element": PGNServer;
   }
 }
