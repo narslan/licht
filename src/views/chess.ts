@@ -81,9 +81,9 @@ export class ChessElement extends LitElement {
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-          action: string;
-          data: string;
-        })
+            action: string;
+            data: string;
+          })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
@@ -107,18 +107,6 @@ export class ChessElement extends LitElement {
         }
       }
     };
-
-    // this.ws.onopen = () => {
-    //   console.log(this.orientation);
-
-    //   if (this.orientation == "black") {
-    //     const fen = { action: "onMove", data: this.game.fen() };
-    //     this.ws.send(JSON.stringify(fen));
-    //     // this.ws.send(
-    //     //   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    //     // );
-    //   }
-    // };
   }
 
   async disconnectedCallback() {
