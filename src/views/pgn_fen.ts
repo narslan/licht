@@ -47,8 +47,9 @@ export class PGNFEN extends LitElement {
     this.ws.onopen = () => {
       const fen = { action: "onOpen", data: fen };
       this.ws.send(JSON.stringify(fen));
+      this.ws.close();
     }
-
+   
       }
     }
 }

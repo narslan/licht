@@ -173,7 +173,7 @@ export class PGNServer extends LitElement {
             this.updateStatus();
 
             if (!this.game.isGameOver()) {
-              //? the above line dubious, what should I do here?
+              //? the above line dubious, what should I do here? What is the requirement for the end of the game.
               const fen = { action: "onMove", data: this.game.fen() };
               this.ws.send(JSON.stringify(fen));
             }
