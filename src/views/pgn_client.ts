@@ -94,17 +94,16 @@ export class PGNClient extends LitElement {
 
   constructor() {
     super();
-   // this.addEventListener('myfen', (e) => console.log(e.type, e.target));
- 
+    this.addEventListener("myfen", (e) => console.log(e.type, e.target));
   }
 
   protected createRenderRoot() {
     const root = super.createRenderRoot();
-    root.addEventListener('myfen',
-      (e: Event) => this.shadowName = (e.target as Element).localName);
+    root.addEventListener("myfen", (e: Event) =>
+      console.log("hello create render", e)
+    );
     return root;
   }
-
 
   _dispatchChangeOrientation() {
     this.orientation = this.orientation === "black" ? "white" : "black";
@@ -165,22 +164,21 @@ export class PGNClient extends LitElement {
       if (action === "onConnect") {
         this.engine_id = data.db;
         this._database_id.innerHTML = data.db;
-       
+
         this.game.loadPgn(data.moves);
         //this.moves = data.moves.split(" ").filter((word) => word.length > 0);
 
         const movesList = this.game
           .history({ verbose: true })
           .map((element, index) => {
-           
-            return `<pgn_fen-element  index="${index + 1}" beforeMove="${element["before"]}" move="${element["san"]}" ></pgn_fen-element>
+            return `<pgn_fen-element  index="${index + 1}" beforeMove="${
+              element["before"]
+            }" move="${element["san"]}" ></pgn_fen-element>
             `;
           })
           .join("");
 
-        this._pgn.innerHTML= `<md-list>  ${movesList}  </md-list>`;
-
-        
+        this._pgn.innerHTML = `<md-list>  ${movesList}  </md-list>`;
       } else if (action === "onMove") {
         if (data.moves.length == 4 || data.moves.length == 5) {
           const from = data.moves.slice(0, 2);
@@ -209,7 +207,7 @@ export class PGNClient extends LitElement {
 
   // private _fenListener(e: CustomEvent) {
   //   console.log("custom event",e);
-    
+
   // }
 
   async disconnectedCallback() {

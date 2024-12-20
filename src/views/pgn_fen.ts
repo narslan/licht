@@ -15,14 +15,17 @@ export class PGNFEN extends LitElement {
   index = 0;
   @property({ type: String })
   move = "";
-  
-  
-
+  @property({ type: String })
+  best = "";
 
   render() {
     return html`<md-list-item>
-    <div slot="headline" @click="${this._setBoard}">${this.index}. ${this.move}</div>
-    </md-list-item>
+        <div slot="headline" @click="${this._setBoard}">
+          ${this.index}. ${this.move}
+        </div>
+        <div slot="headline"></div>
+        <div slot="supporting-text">${this.best}</div>
+      </md-list-item>
       <md-divider></md-divider>`;
   }
 
@@ -35,23 +38,36 @@ export class PGNFEN extends LitElement {
     `,
   ];
 
+  private _setBoard() {
+    const fen = this.beforeMove;
+    console.log(fen);
 
+    if (fen) {
+      const ws = new WebSocket(`ws://localhost:8000/_hamle`);
 
-    private _setBoard() {
-      const fen = this.beforeMove;
-      console.log(fen);
-      
-      if (fen) {
-       const ws = new WebSocket(`ws://localhost:8000/_hamlet`);
-       
-    this.ws.onopen = () => {
-      const fen = { action: "onOpen", data: fen };
-      this.ws.send(JSON.stringify(fen));
-      this.ws.close();
+      ws.onopen = () => {
+        const fen = { action: "onOpen", data: this.beforeMove };
+        ws.send(JSON.stringify(fen));
+      };
+
+      ws.onmessage = (msg: MessageEvent) => {
+        const { action, data } = msg.data.startsWith("{")
+          ? (JSON.parse(msg.data) as {
+              action: string;
+              data: {
+                moves: string;
+                db: string;
+              };
+            })
+          : { action: "", data: { best: "" } };
+
+        if (action === "onData") {
+          this.best = data["best"];
+          ws.close();
+        }
+      };
     }
-   
-      }
-    }
+  }
 }
 
 declare global {
