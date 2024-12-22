@@ -17,10 +17,19 @@ export class PGNFEN extends LitElement {
   move = "";
   @property({ type: String })
   best = "";
+  // @property({ type: ChessBoardElement })
+  // board = new ChessBoardElement();
 
   render() {
     return html`<md-list-item>
-        <div slot="headline" @click="${this._setBoard}">
+        <div
+          slot="headline"
+          @click=${{
+            handleEvent: () => this._setBoard(),
+            once: true,
+            bubble: true,
+          }}
+        >
           ${this.index}. ${this.move}
         </div>
         <div slot="headline"></div>
@@ -40,9 +49,18 @@ export class PGNFEN extends LitElement {
 
   private _setBoard() {
     const fen = this.beforeMove;
-    console.log(fen);
 
+    const event = new CustomEvent("my-event", {
+      detail: {
+        message: "Something important happened",
+      },
+    });
+
+    this.dispatchEvent(event);
     if (fen) {
+      // Set board.
+
+      // Talk to server to obtain engines idea .
       const ws = new WebSocket(`ws://localhost:8000/_hamle`);
 
       ws.onopen = () => {

@@ -92,19 +92,6 @@ export class PGNClient extends LitElement {
     `;
   }
 
-  constructor() {
-    super();
-    this.addEventListener("myfen", (e) => console.log(e.type, e.target));
-  }
-
-  protected createRenderRoot() {
-    const root = super.createRenderRoot();
-    root.addEventListener("myfen", (e: Event) =>
-      console.log("hello create render", e)
-    );
-    return root;
-  }
-
   _dispatchChangeOrientation() {
     this.orientation = this.orientation === "black" ? "white" : "black";
   }
@@ -205,11 +192,6 @@ export class PGNClient extends LitElement {
     };
   }
 
-  // private _fenListener(e: CustomEvent) {
-  //   console.log("custom event",e);
-
-  // }
-
   async disconnectedCallback() {
     super.disconnectedCallback();
     this.ws.close();
@@ -241,8 +223,13 @@ export class PGNClient extends LitElement {
     this._chessBoard.setPosition(this.game.fen());
     this._status.innerHTML = status;
   }
+  _handleClick(e) {
+    console.log("in myhandle click", e);
+  }
+  async firstUpdated() {
+    await new Promise((r) => setTimeout(r, 0));
 
-  firstUpdated() {
+    this.addEventListener("my-event", this._handleClick);
     this.updateStatus();
   }
 }
