@@ -32,9 +32,9 @@ export class PGNClient extends LitElement {
   count = 0;
   @property({ type: String })
   engine_id = "";
-  @property({ type: Chess })
+  @property({ attribute: false })
   game = new Chess();
-  @property({ type: WebSocket })
+  @property({ attribute: false })
   ws = new WebSocket(`ws://localhost:8000/_pgn`);
   @property({ type: Array })
   moves = [];
@@ -87,6 +87,7 @@ export class PGNClient extends LitElement {
           <div id="status"></div>
 
           <div id="pgn" style="text-align: left;"></div>
+          <pgn_fen-element .moves="${this.moves}"></pgn_fen-element>
         </div>
       </div>
     `;
@@ -140,12 +141,12 @@ export class PGNClient extends LitElement {
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-            action: string;
-            data: {
-              moves: string;
-              db: string;
-            };
-          })
+          action: string;
+          data: {
+            moves: string;
+            db: string;
+          };
+        })
         : { action: "", data: { moves: "", db: "" } };
 
       if (action === "onConnect") {
@@ -155,17 +156,30 @@ export class PGNClient extends LitElement {
         this.game.loadPgn(data.moves);
         //this.moves = data.moves.split(" ").filter((word) => word.length > 0);
 
-        const movesList = this.game
+        const movesList1 = this.game
+          .history({ verbose: true })
+          .map((element) => {
+            return { afterMove: element["after"], beforeMove: element["before"], move: element["san"]};
+           /* return `<pgn_fen-element  index="${index + 1}" beforeMove="${element["before"]
+              }" move="${element["san"]}" ></pgn_fen-element>
+            `;*/
+          });
+
+          this.moves = movesList1;
+          //console.log(movesList1);
+
+
+
+       /* const movesList = this.game
           .history({ verbose: true })
           .map((element, index) => {
-            return `<pgn_fen-element  index="${index + 1}" beforeMove="${
-              element["before"]
-            }" move="${element["san"]}" ></pgn_fen-element>
+            return `<pgn_fen-element  index="${index + 1}" beforeMove="${element["before"]
+              }" move="${element["san"]}" ></pgn_fen-element>
             `;
           })
           .join("");
 
-        this._pgn.innerHTML = `<md-list>  ${movesList}  </md-list>`;
+        this._pgn.innerHTML = `<md-list>  ${movesList}  </md-list>`;*/
       } else if (action === "onMove") {
         if (data.moves.length == 4 || data.moves.length == 5) {
           const from = data.moves.slice(0, 2);
@@ -232,6 +246,14 @@ export class PGNClient extends LitElement {
     this.addEventListener("my-event", this._handleClick);
     this.updateStatus();
   }
+
+constructor() {
+  super();
+  this.addEventListener('myclick', (e: CustomEvent) => 
+      this._chessBoard.setPosition(e.detail)
+    );
+}
+
 }
 
 declare global {

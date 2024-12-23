@@ -4,38 +4,40 @@ import "@material/web/checkbox/checkbox.js";
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import "./pgn_fen_item";
 
 document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
 
 @customElement("pgn_fen-element")
 export class PGNFEN extends LitElement {
+  @property({ type: Array })
+  moves = [];
   @property({ type: String })
-  beforeMove = "";
-  @property({ type: Number })
+  best = "";
+  /*  @property({ type: Number })
   index = 0;
   @property({ type: String })
   move = "";
   @property({ type: String })
-  best = "";
+  best = "";*/
   // @property({ type: ChessBoardElement })
   // board = new ChessBoardElement();
 
   render() {
-    return html`<md-list-item>
-        <div
-          slot="headline"
-          @click=${{
-            handleEvent: () => this._setBoard(),
-            once: true,
-            bubble: true,
-          }}
-        >
-          ${this.index}. ${this.move}
-        </div>
-        <div slot="headline"></div>
-        <div slot="supporting-text">${this.best}</div>
-      </md-list-item>
-      <md-divider></md-divider>`;
+    return html`
+      <md-list>
+        ${this.moves.map((move) => html`
+          <md-list-item>
+          
+          <div slot="headline">${move.move}</div>
+          <div slot="supporting-text">
+          <pgn_fen_item-element .beforeMove=${move.beforeMove} .afterMove=${move.afterMove} ></pgn_fen_item-element>
+          </div>
+        </md-list-item>
+        <md-divider></md-divider>
+          `  )  }
+      </md-list>
+    `;
   }
 
   static styles = [
@@ -44,48 +46,13 @@ export class PGNFEN extends LitElement {
       :host {
         font-size: 0.2rem;
       }
+      md-list {
+        width: 100px;
+      }
     `,
   ];
 
-  private _setBoard() {
-    const fen = this.beforeMove;
-
-    const event = new CustomEvent("my-event", {
-      detail: {
-        message: "Something important happened",
-      },
-    });
-
-    this.dispatchEvent(event);
-    if (fen) {
-      // Set board.
-
-      // Talk to server to obtain engines idea .
-      const ws = new WebSocket(`ws://localhost:8000/_hamle`);
-
-      ws.onopen = () => {
-        const fen = { action: "onOpen", data: this.beforeMove };
-        ws.send(JSON.stringify(fen));
-      };
-
-      ws.onmessage = (msg: MessageEvent) => {
-        const { action, data } = msg.data.startsWith("{")
-          ? (JSON.parse(msg.data) as {
-              action: string;
-              data: {
-                moves: string;
-                db: string;
-              };
-            })
-          : { action: "", data: { best: "" } };
-
-        if (action === "onData") {
-          this.best = data["best"];
-          ws.close();
-        }
-      };
-    }
-  }
+  
 }
 
 declare global {
