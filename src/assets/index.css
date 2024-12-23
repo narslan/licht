@@ -10,7 +10,7 @@
   --md-sys-typescale-headline-font: var(--my-headline-font);
   --md-sys-typescale-title-font: var(--my-title-font);
 
-  --md-sys-color-primary: rgb(219 198 110);
+  --md-sys-color-primary: rgb(19 198 10);
   --md-sys-color-surface-tint: rgb(219 198 110);
   --md-sys-color-on-primary: rgb(58 48 0);
   --md-sys-color-primary-container: rgb(83 70 0);
@@ -40,7 +40,7 @@
   --md-sys-color-inverse-surface: rgb(232 226 212);
   --md-sys-color-inverse-on-surface: rgb(51 48 39);
   --md-sys-color-inverse-primary: rgb(109 94 15);
-  --md-sys-color-primary-fixed: rgb(248 226 135);
+  --md-sys-color-primary-fixed: rgb(248 22 135);
   --md-sys-color-on-primary-fixed: rgb(34 27 0);
   --md-sys-color-primary-fixed-dim: rgb(219 198 110);
   --md-sys-color-on-primary-fixed-variant: rgb(83 70 0);
