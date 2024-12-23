@@ -47,7 +47,7 @@ export class PGNFEN extends LitElement {
         font-size: 0.2rem;
       }
       md-list {
-        width: 100px;
+        width: 200px;
       }
     `,
   ];

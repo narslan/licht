@@ -43,9 +43,7 @@ export class PGNFENItem extends LitElement {
       :host {
         font-size: 0.2rem;
       }
-      md-list {
-        width: 100px;
-      }
+    
     `,
   ];
 
