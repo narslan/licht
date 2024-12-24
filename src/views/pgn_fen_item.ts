@@ -1,6 +1,8 @@
 import "@material/web/button/filled-button.js";
 import "@material/web/button/outlined-button.js";
 import "@material/web/checkbox/checkbox.js";
+import "@material/web/chips/suggestion-chip.js";
+
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -32,7 +34,9 @@ export class PGNFENItem extends LitElement {
         </md-outlined-button>
       `;
     } else {
-      return html`${this.best}, ${this.score}`;
+      return html`<md-suggestion-chip
+        label="${this.index} ${this.best}  ${this.score}"
+      ></md-suggestion-chip>`;
     }
   }
 

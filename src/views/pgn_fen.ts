@@ -1,6 +1,8 @@
 import "@material/web/button/filled-button.js";
 import "@material/web/button/outlined-button.js";
 import "@material/web/checkbox/checkbox.js";
+import "@material/web/chips/chip-set.js";
+
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -15,20 +17,26 @@ export class PGNFEN extends LitElement {
   @property({ type: String })
   best = "";
 
-
   render() {
     return html`
       <md-list>
-        ${this.moves.map((move) => html`
-          <md-list-item>
-          
-          <div slot="headline">${move.move}</div>
-          <div slot="supporting-text">
-          <pgn_fen_item-element .beforeMove=${move.beforeMove} .afterMove=${move.afterMove} ></pgn_fen_item-element>
-          </div>
-        </md-list-item>
-        <md-divider></md-divider>
-          `  )}
+        ${this.moves.map(
+          (move) => html`
+            <md-list-item>
+              <div slot="headline">${move.move}</div>
+              <div slot="supporting-text">
+                <md-chip-set>
+                  <pgn_fen_item-element
+                    .beforeMove=${move.beforeMove}
+                    .afterMove=${move.afterMove}
+                    .index=${move.index}
+                  ></pgn_fen_item-element>
+                </md-chip-set>
+              </div>
+            </md-list-item>
+            <md-divider></md-divider>
+          `
+        )}
       </md-list>
     `;
   }
@@ -44,8 +52,6 @@ export class PGNFEN extends LitElement {
       }
     `,
   ];
-
-
 }
 
 declare global {

@@ -157,11 +157,12 @@ export class PGNClient extends LitElement {
 
         const movesList1 = this.game
           .history({ verbose: true })
-          .map((element) => {
+          .map((element, index) => {
             return {
               afterMove: element["after"],
               beforeMove: element["before"],
               move: element["san"],
+              index: index + 1,
             };
           });
 
@@ -184,7 +185,7 @@ export class PGNClient extends LitElement {
               this.ws.send(JSON.stringify(fen));
             }
           } catch (error) {
-            console.err("error from onMove handler", error);
+            console.error("error from onMove handler", error);
           }
         }
       }
