@@ -9,36 +9,35 @@ document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
 
 @customElement("pgn_fen_item-element")
 export class PGNFENItem extends LitElement {
-  @property({ type: String })
+  @property({ attribute: false, type: String })
   beforeMove = "";
-  @property({ type: String })
+  @property({ attribute: false, type: String })
   afterMove = "";
-  @property({ type: String })
+  @property({ attribute: false, type: String })
   best = "";
-  @property({ type: String })
+  @property({ attribute: false, type: String })
   score = "";
-  /*  @property({ type: Number })
-  index = 0;
-  @property({ type: String })
-  move = "";
-  @property({ type: String })
-  best = "";*/
-  // @property({ type: ChessBoardElement })
-  // board = new ChessBoardElement();
+  @property({ attribute: false, type: Number })
+  index = "";
+
+  getEngineMove() {
+    if (this.best === "") {
+      return html`
+        <md-outlined-button
+          @click=${{
+            handleEvent: () => this._setBoard(),
+            bubble: true,
+          }}
+        >
+        </md-outlined-button>
+      `;
+    } else {
+      return html`${this.best}, ${this.score}`;
+    }
+  }
 
   render() {
-    return html`
-      <md-outlined-button
-        @click=${{
-        handleEvent: () => this._setBoard(),
-        bubble: true,
-      }}
-      >
-        ${this.best},  ${this.score}
-
-
-      </md-outlined-button>
-    `;
+    return html`<p>${this.getEngineMove()}</p>`;
   }
 
   static styles = [
@@ -47,19 +46,16 @@ export class PGNFENItem extends LitElement {
       :host {
         font-size: 0.2rem;
       }
-    
     `,
   ];
 
   private _setBoard() {
-
     const options = {
       detail: this.afterMove,
       bubbles: true,
-      composed: true
+      composed: true,
     };
-    this.dispatchEvent(new CustomEvent('myclick', options));
-
+    this.dispatchEvent(new CustomEvent("myclick", options));
 
     const fen = this.beforeMove;
 
@@ -77,12 +73,12 @@ export class PGNFENItem extends LitElement {
       ws.onmessage = (msg: MessageEvent) => {
         const { action, data } = msg.data.startsWith("{")
           ? (JSON.parse(msg.data) as {
-            action: string;
-            data: {
-              best: string;
-              cp: string;
-            };
-          })
+              action: string;
+              data: {
+                best: string;
+                cp: string;
+              };
+            })
           : { action: "", data: { best: "", cp: "" } };
 
         if (action === "onData") {

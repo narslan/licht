@@ -141,12 +141,12 @@ export class PGNClient extends LitElement {
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-          action: string;
-          data: {
-            moves: string;
-            db: string;
-          };
-        })
+            action: string;
+            data: {
+              moves: string;
+              db: string;
+            };
+          })
         : { action: "", data: { moves: "", db: "" } };
 
       if (action === "onConnect") {
@@ -154,32 +154,18 @@ export class PGNClient extends LitElement {
         this._database_id.innerHTML = data.db;
 
         this.game.loadPgn(data.moves);
-        //this.moves = data.moves.split(" ").filter((word) => word.length > 0);
 
         const movesList1 = this.game
           .history({ verbose: true })
           .map((element) => {
-            return { afterMove: element["after"], beforeMove: element["before"], move: element["san"]};
-           /* return `<pgn_fen-element  index="${index + 1}" beforeMove="${element["before"]
-              }" move="${element["san"]}" ></pgn_fen-element>
-            `;*/
+            return {
+              afterMove: element["after"],
+              beforeMove: element["before"],
+              move: element["san"],
+            };
           });
 
-          this.moves = movesList1;
-          //console.log(movesList1);
-
-
-
-       /* const movesList = this.game
-          .history({ verbose: true })
-          .map((element, index) => {
-            return `<pgn_fen-element  index="${index + 1}" beforeMove="${element["before"]
-              }" move="${element["san"]}" ></pgn_fen-element>
-            `;
-          })
-          .join("");
-
-        this._pgn.innerHTML = `<md-list>  ${movesList}  </md-list>`;*/
+        this.moves = movesList1;
       } else if (action === "onMove") {
         if (data.moves.length == 4 || data.moves.length == 5) {
           const from = data.moves.slice(0, 2);
@@ -194,12 +180,11 @@ export class PGNClient extends LitElement {
             this.updateStatus();
 
             if (!this.game.isGameOver()) {
-              //? the above line dubious, what should I do here?
               const fen = { action: "onMove", data: this.game.fen() };
               this.ws.send(JSON.stringify(fen));
             }
           } catch (error) {
-            //console.log("error from server", error);
+            console.err("error from onMove handler", error);
           }
         }
       }
@@ -247,13 +232,12 @@ export class PGNClient extends LitElement {
     this.updateStatus();
   }
 
-constructor() {
-  super();
-  this.addEventListener('myclick', (e: CustomEvent) => 
+  constructor() {
+    super();
+    this.addEventListener("myclick", (e: CustomEvent) =>
       this._chessBoard.setPosition(e.detail)
     );
-}
-
+  }
 }
 
 declare global {
