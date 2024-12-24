@@ -14,8 +14,6 @@ document.adoptedStyleSheets.push(typescaleStyles.styleSheet!);
 export class PGNFEN extends LitElement {
   @property({ type: Array })
   moves = [];
-  @property({ type: String })
-  best = "";
 
   render() {
     return html`
@@ -23,7 +21,7 @@ export class PGNFEN extends LitElement {
         ${this.moves.map(
           (move) => html`
             <md-list-item>
-              <div slot="headline">${move.move}</div>
+              <div slot="headline">${move.index} ${move.move}</div>
               <div slot="supporting-text">
                 <md-chip-set>
                   <pgn_fen_item-element

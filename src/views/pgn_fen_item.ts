@@ -19,8 +19,6 @@ export class PGNFENItem extends LitElement {
   best = "";
   @property({ attribute: false, type: String })
   score = "";
-  @property({ attribute: false, type: Number })
-  index = "";
 
   getEngineMove() {
     if (this.best === "") {
@@ -35,7 +33,7 @@ export class PGNFENItem extends LitElement {
       `;
     } else {
       return html`<md-suggestion-chip
-        label="${this.index} ${this.best}  ${this.score}"
+        label="${this.best}  ${this.score}"
       ></md-suggestion-chip>`;
     }
   }

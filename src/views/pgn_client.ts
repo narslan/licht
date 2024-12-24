@@ -223,13 +223,8 @@ export class PGNClient extends LitElement {
     this._chessBoard.setPosition(this.game.fen());
     this._status.innerHTML = status;
   }
-  _handleClick(e) {
-    console.log("in myhandle click", e);
-  }
-  async firstUpdated() {
-    await new Promise((r) => setTimeout(r, 0));
 
-    this.addEventListener("my-event", this._handleClick);
+  async firstUpdated() {
     this.updateStatus();
   }
 

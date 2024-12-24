@@ -94,8 +94,7 @@ export class HomeElement extends LitElement {
       .chart{
         --point-inner-color=rgb(105 0 5);
         }
-        
-    `,
+        `,
   ];
 }
 
