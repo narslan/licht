@@ -53,7 +53,7 @@ export class EngineMatch extends LitElement {
           >
           </chess-board>
           <div id="fen"></div>
-           
+
           <p>
             <button @click=${this._dispatchChangeOrientation}>
               Change Sides
@@ -79,12 +79,12 @@ export class EngineMatch extends LitElement {
     super.connectedCallback();
     await this.updateComplete;
 
-    this.ws.onmessage = (msg: MessageEvent) => {
+    this.ws.onmessage = async (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-          action: string;
-          data: string;
-        })
+            action: string;
+            data: string;
+          })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
@@ -101,14 +101,14 @@ export class EngineMatch extends LitElement {
               promotion: "q", // NOTE: always promote to a queen
             });
             this.updateStatus();
-
-            if (!this.game.isDraw()) {
+            await new Promise((r) => setTimeout(r, 500));
+            if (!this.game.isGameOver()) {
               //? the above line dubious, what should I do here?
               const fen = { action: "onMove", data: this.game.fen() };
               this.ws.send(JSON.stringify(fen));
             }
           } catch (error) {
-            //console.log("error from server", error);
+            console.log("error from server", error);
           }
         }
       }
