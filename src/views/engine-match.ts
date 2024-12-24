@@ -42,6 +42,7 @@ export class EngineMatch extends LitElement {
   render() {
     return html`
       <div id="chessboard">
+        <div>${this.engine_id}</div>
         <div>
           <chess-board
             style="width: 600px"
@@ -52,6 +53,7 @@ export class EngineMatch extends LitElement {
           >
           </chess-board>
           <div id="fen"></div>
+           
           <p>
             <button @click=${this._dispatchChangeOrientation}>
               Change Sides
