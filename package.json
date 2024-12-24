@@ -7,7 +7,7 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
-        "lint": "eslint \"**/*.{js,ts}\""
+        "lint": "eslint \"**/*.ts\""
     },
     "dependencies": {
         "@material/web": "^2.2.0",

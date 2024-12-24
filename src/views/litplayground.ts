@@ -9,12 +9,13 @@ export class LitPlayground extends LitElement {
         background-color: lightgray;
         padding: 8px;
         }
-
+        
         :host(.blue) {
         background-color: aliceblue;
         color: darkgreen;
         }
-  `;
+    `;
+    
     protected render() {
       return html`Hello World`;
   }

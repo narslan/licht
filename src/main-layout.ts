@@ -5,8 +5,8 @@ import "./views/chessb";
 import "./views/home";
 import "./views/engine-match";
 import "./views/pgn_server"; // pgn comes from the server.
-import "./views/pgn_client"; // pgn comes from the client.
-
+import "./views/pgn_client"; // pgn loaded at client side, TODO: remove the server variant.
+import "./views/litplayground"; // pgn comes from the client.
 import "@material/web/tabs/tabs";
 import "@material/web/list/list";
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
@@ -27,7 +27,7 @@ export class MainLayout extends LitElement {
   firstUpdated() {
     const router = new Router(this.shadowRoot.querySelector("main"));
     router.setRoutes([
-        { path: "/", component: "home-element" },
+        { path: "/", component: "litplayground-element" },
         { path: "/home", component: "home-element" },
         { path: "/chess", component: "chess-element" },
         { path: "/black", component: "chessb-element" },
@@ -39,7 +39,7 @@ export class MainLayout extends LitElement {
             path: "(.*)",
             redirect: "/",
             action: () => {
-                this.activeTab = "home-element";
+                this.activeTab = "litplayground-element";
             },
         },
     ]);

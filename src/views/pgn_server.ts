@@ -12,17 +12,17 @@ import "chessboard-element";
 @customElement("pgn_server-element")
 export class PGNServer extends LitElement {
   @query("chess-board")
-  _chessBoard: any;
+  _chessBoard: undefined;
   @query("#status")
-  _status: any;
+  _status: undefined;
   @query("#pgn")
-  _pgn: any;
+  _pgn: undefined;
   @query("#fen")
-  _fen: any;
+  _fen: undefined;
   @query("#parse")
-  _parse: any;
+  _parse: undefined;
   @query("#database_id")
-  _database_id: any;
+  _database_id: undefined;
 
   @property({ type: String })
   orientation = "black";
@@ -119,7 +119,8 @@ export class PGNServer extends LitElement {
         promotion: "q", // NOTE: always promote to a queen
       });
 
-      this.updateStatus();
+        this.updateStatus();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars 
     } catch (error) {
       setAction("snapback");
     }
@@ -173,12 +174,11 @@ export class PGNServer extends LitElement {
             this.updateStatus();
 
             if (!this.game.isGameOver()) {
-              //? the above line dubious, what should I do here? What is the requirement for the end of the game.
               const fen = { action: "onMove", data: this.game.fen() };
               this.ws.send(JSON.stringify(fen));
             }
           } catch (error) {
-            //console.log("error from server", error);
+              console.log("error from server", error);
           }
         }
       }
