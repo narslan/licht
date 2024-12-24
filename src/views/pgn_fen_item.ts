@@ -15,6 +15,8 @@ export class PGNFENItem extends LitElement {
   afterMove = "";
   @property({ type: String })
   best = "";
+  @property({ type: String })
+  score = "";
   /*  @property({ type: Number })
   index = 0;
   @property({ type: String })
@@ -28,11 +30,13 @@ export class PGNFENItem extends LitElement {
     return html`
       <md-outlined-button
         @click=${{
-          handleEvent: () => this._setBoard(),
-          bubble: true,
-        }}
+        handleEvent: () => this._setBoard(),
+        bubble: true,
+      }}
       >
-        ${this.best}
+        ${this.best},  ${this.score}
+
+
       </md-outlined-button>
     `;
   }
@@ -49,12 +53,12 @@ export class PGNFENItem extends LitElement {
 
   private _setBoard() {
 
-     const options = {
-        detail: this.afterMove,
-        bubbles: true,
-        composed: true
-      };
-      this.dispatchEvent(new CustomEvent('myclick', options));
+    const options = {
+      detail: this.afterMove,
+      bubbles: true,
+      composed: true
+    };
+    this.dispatchEvent(new CustomEvent('myclick', options));
 
 
     const fen = this.beforeMove;
@@ -73,16 +77,17 @@ export class PGNFENItem extends LitElement {
       ws.onmessage = (msg: MessageEvent) => {
         const { action, data } = msg.data.startsWith("{")
           ? (JSON.parse(msg.data) as {
-              action: string;
-              data: {
-                moves: string;
-                db: string;
-              };
-            })
-          : { action: "", data: { best: "" } };
+            action: string;
+            data: {
+              best: string;
+              cp: string;
+            };
+          })
+          : { action: "", data: { best: "", cp: "" } };
 
         if (action === "onData") {
           this.best = data["best"];
+          this.score = data["cp"];
           ws.close();
         }
       };

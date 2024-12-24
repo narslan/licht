@@ -14,14 +14,7 @@ export class PGNFEN extends LitElement {
   moves = [];
   @property({ type: String })
   best = "";
-  /*  @property({ type: Number })
-  index = 0;
-  @property({ type: String })
-  move = "";
-  @property({ type: String })
-  best = "";*/
-  // @property({ type: ChessBoardElement })
-  // board = new ChessBoardElement();
+
 
   render() {
     return html`
@@ -35,7 +28,7 @@ export class PGNFEN extends LitElement {
           </div>
         </md-list-item>
         <md-divider></md-divider>
-          `  )  }
+          `  )}
       </md-list>
     `;
   }
@@ -52,7 +45,7 @@ export class PGNFEN extends LitElement {
     `,
   ];
 
-  
+
 }
 
 declare global {

@@ -80,9 +80,9 @@ export class EngineMatch extends LitElement {
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-            action: string;
-            data: string;
-          })
+          action: string;
+          data: string;
+        })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
@@ -91,7 +91,6 @@ export class EngineMatch extends LitElement {
         if (data.length == 4 || data.length == 5) {
           const from = data.slice(0, 2);
           const to = data.slice(2, 4);
-          //console.log(this.game.fen());
 
           try {
             this.game.move({
