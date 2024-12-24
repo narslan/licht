@@ -6,8 +6,12 @@ import tseslint from "typescript-eslint";
 /** @type {import('eslint').Linter.Config[]} */
 export default [
     {
-        files: ["**/*.{ts}"]
+        files: ["**/*.{ts}"],
+        extends: [
+            "plugin:lit/recommended"
+         ]
     },
+   
     {
         languageOptions:
         {
@@ -15,5 +19,5 @@ export default [
         }
     },
     pluginJs.configs.recommended,
-    ...tseslint.configs.recommended 
+    ...tseslint.configs.recommended
 ];
