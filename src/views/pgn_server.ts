@@ -10,59 +10,53 @@ import "chessboard-element";
 
 @customElement("pgn_server-element")
 export class PGNServer extends LitElement {
+  @query("#database_id")
+  _database_id: any;
 
-    @query("#database_id")
-    _database_id: any;
+  @property({ type: WebSocket })
+  ws = new WebSocket(`ws://localhost:8000/_pgndb`);
 
-    @property({ type: WebSocket })
-    ws = new WebSocket(`ws://localhost:8000/_pgn`);
+  static styles = css``;
 
-    static styles = css`
-   
-  `;
-
-    render() {
-        return html`
+  render() {
+    return html`
       <div id="database_id"></div>
     
       </div>
     `;
-    }
+  }
 
-    async connectedCallback() {
-        super.connectedCallback();
-        await this.updateComplete;
+  async connectedCallback() {
+    super.connectedCallback();
+    await this.updateComplete;
 
-        this.ws.onmessage = (msg: MessageEvent) => {
-            const { action, data } = msg.data.startsWith("{")
-                ? (JSON.parse(msg.data) as {
-                    action: string;
-                    data: {
-                        moves: string;
-                        db: string;
-                    };
-                })
-                : { action: "", data: { moves: "", db: "" } };
+    this.ws.onmessage = (msg: MessageEvent) => {
+      const { action, data } = msg.data.startsWith("{")
+        ? (JSON.parse(msg.data) as {
+            action: string;
+            data: {
+              moves: string;
+              db: string;
+            };
+          })
+        : { action: "", data: { moves: "", db: "" } };
 
-            if (action === "onConnect") {
-                console.log(data);
-            }
-        }
-    }
+      if (action === "onConnect") {
+        console.log(data);
+      }
+    };
+  }
 
-    
-    async disconnectedCallback() {
-        super.disconnectedCallback();
-        this.ws.close();
-    }
+  async disconnectedCallback() {
+    super.disconnectedCallback();
+    this.ws.close();
+  }
 
-    firstUpdated() {
-
-    }
+  firstUpdated() {}
 }
 
 declare global {
-    interface HTMLElementTagNameMap {
-        "pgn_server-element": PGNServer;
-    }
+  interface HTMLElementTagNameMap {
+    "pgn_server-element": PGNServer;
+  }
 }
