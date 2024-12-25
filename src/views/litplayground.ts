@@ -1,6 +1,7 @@
 import {LitElement, html, css} from 'lit';
 import {customElement} from 'lit/decorators/custom-element.js';
 
+import "./../templates/example"
 @customElement('litplayground-element')
 export class LitPlayground extends LitElement {
     static styles = css`
@@ -17,7 +18,7 @@ export class LitPlayground extends LitElement {
     `;
     
     protected render() {
-      return html`Hello World`;
+        return html`<example1-element class="blue"></example1-element>`;
   }
 }
 

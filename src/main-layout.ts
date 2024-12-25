@@ -27,7 +27,7 @@ export class MainLayout extends LitElement {
   firstUpdated() {
     const router = new Router(this.shadowRoot.querySelector("main"));
     router.setRoutes([
-        { path: "/", component: "litplayground-element" },
+        { path: "/", component: "pgn_server-element" },
         { path: "/home", component: "home-element" },
         { path: "/chess", component: "chess-element" },
         { path: "/black", component: "chessb-element" },
@@ -39,7 +39,7 @@ export class MainLayout extends LitElement {
             path: "(.*)",
             redirect: "/",
             action: () => {
-                this.activeTab = "litplayground-element";
+                this.activeTab = "pgn_server-element";
             },
         },
     ]);
