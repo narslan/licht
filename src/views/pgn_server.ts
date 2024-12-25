@@ -12,17 +12,17 @@ import "chessboard-element";
 @customElement("pgn_server-element")
 export class PGNServer extends LitElement {
   @query("chess-board")
-  _chessBoard: undefined;
+  _chessBoard: any;
   @query("#status")
-  _status: undefined;
+  _status: any;
   @query("#pgn")
-  _pgn: undefined;
+  _pgn: any;
   @query("#fen")
-  _fen: undefined;
+  _fen: any;
   @query("#parse")
-  _parse: undefined;
+  _parse: any;
   @query("#database_id")
-  _database_id: undefined;
+  _database_id: any;
 
   @property({ type: String })
   orientation = "black";
