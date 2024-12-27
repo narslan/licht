@@ -22,21 +22,11 @@ export class OpeningsElement extends LitElement {
 
   render() {
     return html`
-      <table>
-    <thead>
-      <tr>
-        ${Object.keys(eco[0]).map(i => html`<th>${i}</th>`)}
-      </tr>
-    </thead>
-    <tbody>
-      ${eco.map(i => html`
-      <tr>
-        ${Object.keys(i).map(key => html`<td>${i[key]}</td>`)}
-      </tr>
-      `)}
-    </tbody>
-  </table>
+      <ul>
+        ${eco.map(el => html`<li>${el.eco} ${el.name}</li>`)}
+      </ul>
     `;
+
   }
 
   async connectedCallback() {
@@ -55,9 +45,9 @@ export class OpeningsElement extends LitElement {
     typescaleStyles,
     css`
       .chart{
-        --point-inner-color=rgb(105 0 5);
-        }
-        `,
+      --point - inner - color=rgb(105 0 5);
+    }
+    `,
   ];
 }
 
