@@ -7,6 +7,7 @@ import "./views/engine-match";
 import "./views/pgn_server"; // pgn comes from the server.
 import "./views/pgn_client"; // pgn loaded at client side, TODO: remove the server variant.
 import "./views/litplayground"; // pgn comes from the client.
+import "./views/openings"; // pgn comes from the client.
 import "@material/web/tabs/tabs";
 import "@material/web/list/list";
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
@@ -27,26 +28,27 @@ export class MainLayout extends LitElement {
   firstUpdated() {
     const router = new Router(this.shadowRoot.querySelector("main"));
     router.setRoutes([
-        { path: "/", component: "pgn_server-element" },
-        { path: "/home", component: "home-element" },
-        { path: "/chess", component: "chess-element" },
-        { path: "/black", component: "chessb-element" },
-        { path: "/match", component: "engine-match" },
-        { path: "/litplayground", component: "litplayground-element" },
-        { path: "/pgn_server", component: "pgn_server-element" },
-        { path: "/pgn_client", component: "pgn_client-element" },
-        {
-            path: "(.*)",
-            redirect: "/",
-            action: () => {
-                this.activeTab = "pgn_server-element";
-            },
+      { path: "/", component: "openings-element" },
+      { path: "/home", component: "home-element" },
+      { path: "/chess", component: "chess-element" },
+      { path: "/black", component: "chessb-element" },
+      { path: "/match", component: "engine-match" },
+      { path: "/openings", component: "openings-element" },
+      { path: "/litplayground", component: "litplayground-element" },
+      { path: "/pgn_server", component: "pgn_server-element" },
+      { path: "/pgn_client", component: "pgn_client-element" },
+      {
+        path: "(.*)",
+        redirect: "/",
+        action: () => {
+          this.activeTab = "openings-element";
         },
+      },
     ]);
   }
-    
-    render() {
-        return html`
+
+  render() {
+    return html`
 <div id="container">
 <div id="lsidebar">
 <md-list style="max-width: 150px;">

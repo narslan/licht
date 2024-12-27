@@ -63,30 +63,31 @@ export class HomeElement extends LitElement {
     `;
   }
 
-    async connectedCallback() {
-        super.connectedCallback();
-        await this.updateComplete;
+  async connectedCallback() {
+    super.connectedCallback();
+    await this.updateComplete;
 
-        const that = this;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const that = this;
 
-        this.ws.onmessage = function (msg: MessageEvent) {
-            const { action, data } = msg.data.startsWith("{")
-                ? (JSON.parse(msg.data) as {
-                    action: string;
-                    data: string;
-                })
-                : { action: "", data: "" };
-            
-            if (action === "onConnect") {
-                that.engine_id = data;
-            }
-        };
-    }
+    this.ws.onmessage = function (msg: MessageEvent) {
+      const { action, data } = msg.data.startsWith("{")
+        ? (JSON.parse(msg.data) as {
+          action: string;
+          data: string;
+        })
+        : { action: "", data: "" };
 
-    async disconnectedCallback() {
-        super.disconnectedCallback();
-        this.ws.close();
-    }
+      if (action === "onConnect") {
+        that.engine_id = data;
+      }
+    };
+  }
+
+  async disconnectedCallback() {
+    super.disconnectedCallback();
+    this.ws.close();
+  }
 
   static styles = [
     typescaleStyles,
