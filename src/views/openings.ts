@@ -44,9 +44,7 @@ export class OpeningsElement extends LitElement {
   static styles = [
     typescaleStyles,
     css`
-      .chart{
-      --point - inner - color=rgb(105 0 5);
-    }
+  
     `,
   ];
 }

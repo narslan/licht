@@ -19,7 +19,7 @@ export class PGNFEN extends LitElement {
     return html`
       <md-list>
         ${this.moves.map(
-          (move) => html`
+      (move) => html`
             <md-list-item>
               <div slot="headline">${move.index} ${move.move}</div>
               <div slot="supporting-text">
@@ -34,7 +34,7 @@ export class PGNFEN extends LitElement {
             </md-list-item>
             <md-divider></md-divider>
           `
-        )}
+    )}
       </md-list>
     `;
   }
@@ -47,6 +47,9 @@ export class PGNFEN extends LitElement {
       }
       md-list {
         width: 200px;
+      }
+        md-list-item {
+        font-size: 8px;
       }
     `,
   ];

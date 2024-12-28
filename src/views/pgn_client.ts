@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Must use ?inline because ?inline prevents vite from inserting the styles in
 // a <style> the <head>
 import { LitElement, css, html } from "lit";
@@ -125,6 +126,7 @@ export class PGNClient extends LitElement {
       });
 
       this.updateStatus();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setAction("snapback");
     }
@@ -141,12 +143,12 @@ export class PGNClient extends LitElement {
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-            action: string;
-            data: {
-              moves: string;
-              db: string;
-            };
-          })
+          action: string;
+          data: {
+            moves: string;
+            db: string;
+          };
+        })
         : { action: "", data: { moves: "", db: "" } };
 
       if (action === "onConnect") {
