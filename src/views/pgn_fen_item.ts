@@ -1,7 +1,7 @@
 import "@material/web/button/filled-button.js";
 import "@material/web/button/outlined-button.js";
-import "@material/web/checkbox/checkbox.js";
 import "@material/web/chips/suggestion-chip.js";
+import "@material/web/chips/assist-chip.js";
 
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
 import { LitElement, css, html } from "lit";
@@ -19,35 +19,37 @@ export class PGNFENItem extends LitElement {
   best = "";
   @property({ attribute: false, type: String })
   score = "";
+  @property({ attribute: false, type: String })
+  index = "";
+  @property({ attribute: false, type: String })
+  move = "";
 
   getEngineMove() {
-    if (this.best === "") {
-      return html`
-        <md-outlined-button
-          @click=${{
-            handleEvent: () => this._setBoard(),
-            bubble: true,
-          }}
-        >
-        </md-outlined-button>
-      `;
-    } else {
-      return html`<md-suggestion-chip
-        label="${this.best}  ${this.score}"
-      ></md-suggestion-chip>`;
+    if (this.best !== "") {
+      return html`<md-assist-chip
+        label="${this.best} / ${this.score}"
+      ></md-assist-chip>`;
     }
   }
 
   render() {
-    return html`<p>${this.getEngineMove()}</p>`;
+    return html`<p>
+              <md-suggestion-chip
+          @click=${{
+        handleEvent: () => this._setBoard(),
+        bubble: true,
+      }}
+        label="${this.index}. ${this.move}"
+        elevated=true
+        >
+        </md-suggestion-chip>    
+    ${this.getEngineMove()}</p>`;
   }
 
   static styles = [
     typescaleStyles,
     css`
-      :host {
-        font-size: 0.2rem;
-      }
+     
     `,
   ];
 
@@ -75,12 +77,12 @@ export class PGNFENItem extends LitElement {
       ws.onmessage = (msg: MessageEvent) => {
         const { action, data } = msg.data.startsWith("{")
           ? (JSON.parse(msg.data) as {
-              action: string;
-              data: {
-                best: string;
-                cp: string;
-              };
-            })
+            action: string;
+            data: {
+              best: string;
+              cp: string;
+            };
+          })
           : { action: "", data: { best: "", cp: "" } };
 
         if (action === "onData") {

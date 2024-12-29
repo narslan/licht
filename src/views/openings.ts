@@ -32,13 +32,9 @@ export class OpeningsElement extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     await this.updateComplete;
-
-
   }
-
   async disconnectedCallback() {
     super.disconnectedCallback();
-
   }
 
   static styles = [

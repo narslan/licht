@@ -11,7 +11,7 @@ import "chessboard-element";
 @customElement("pgn_server-element")
 export class PGNServer extends LitElement {
   @query("#database_id")
-  _database_id: any;
+  _database_id: unknown;
 
   @property({ type: WebSocket })
   ws = new WebSocket(`ws://localhost:8000/_pgndb`);
@@ -33,12 +33,12 @@ export class PGNServer extends LitElement {
     this.ws.onmessage = (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-            action: string;
-            data: {
-              moves: string;
-              db: string;
-            };
-          })
+          action: string;
+          data: {
+            moves: string;
+            db: string;
+          };
+        })
         : { action: "", data: { moves: "", db: "" } };
 
       if (action === "onConnect") {
@@ -52,7 +52,7 @@ export class PGNServer extends LitElement {
     this.ws.close();
   }
 
-  firstUpdated() {}
+  firstUpdated() { }
 }
 
 declare global {

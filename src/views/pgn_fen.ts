@@ -1,6 +1,4 @@
-import "@material/web/button/filled-button.js";
-import "@material/web/button/outlined-button.js";
-import "@material/web/checkbox/checkbox.js";
+
 import "@material/web/chips/chip-set.js";
 
 import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
@@ -17,40 +15,26 @@ export class PGNFEN extends LitElement {
 
   render() {
     return html`
-      <md-list>
-        ${this.moves.map(
+      <md-chip-set>
+    
+    ${this.moves.map(
       (move) => html`
-            <md-list-item>
-              <div slot="headline">${move.index} ${move.move}</div>
-              <div slot="supporting-text">
-                <md-chip-set>
-                  <pgn_fen_item-element
+       <pgn_fen_item-element
                     .beforeMove=${move.beforeMove}
                     .afterMove=${move.afterMove}
                     .index=${move.index}
-                  ></pgn_fen_item-element>
-                </md-chip-set>
-              </div>
-            </md-list-item>
-            <md-divider></md-divider>
-          `
+                    .move=${move.move}>
+                  </pgn_fen_item-element>`
     )}
-      </md-list>
+
+      </md-chip-set>
     `;
   }
 
   static styles = [
     typescaleStyles,
     css`
-      :host {
-        font-size: 0.2rem;
-      }
-      md-list {
-        width: 200px;
-      }
-        md-list-item {
-        font-size: 8px;
-      }
+
     `,
   ];
 }

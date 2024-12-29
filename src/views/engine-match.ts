@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Must use ?inline because ?inline prevents vite from inserting the styles in
 // a <style> the <head>
 import { LitElement, css, html } from "lit";
@@ -82,9 +83,9 @@ export class EngineMatch extends LitElement {
     this.ws.onmessage = async (msg: MessageEvent) => {
       const { action, data } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-            action: string;
-            data: string;
-          })
+          action: string;
+          data: string;
+        })
         : { action: "", data: "" };
 
       if (action === "onConnect") {
