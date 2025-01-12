@@ -103,11 +103,13 @@ export class EngineMatch extends LitElement {
             });
             this.updateStatus();
             await new Promise((r) => setTimeout(r, 500));
-            if (!this.game.isGameOver()) {
-              //? the above line dubious, what should I do here?
-              const fen = { action: "onMove", data: this.game.fen() };
+							if (this.game.isGameOver() || this.game.isCheckmate() || this.game.isDraw() || this.game.isThreefoldRepetition() || this.game.isInsufficientMaterial() || this.game.isThreefoldRepetition() || this.game.isStalemate()) {
+									console.log("game ended");
+							} else {
+									
+									const fen = { action: "onMove", data: this.game.fen() };
               this.ws.send(JSON.stringify(fen));
-            }
+							}
           } catch (error) {
             console.log("error from server", error);
           }
