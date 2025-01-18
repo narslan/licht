@@ -20,6 +20,8 @@ export class PGNFENItem extends LitElement {
     @property({ attribute: false, type: String })
     score = "";
     @property({ attribute: false, type: String })
+    cp = "";
+    @property({ attribute: false, type: String })
     depth = "";
 
     @property({ attribute: false, type: String })
@@ -30,7 +32,7 @@ export class PGNFENItem extends LitElement {
     getEngineMove() {
         if (this.best !== "") {
             return html`<md-assist-chip
-label="${this.best} / ${this.score}"
+label="${this.best} / ${this.score} / ${this.cp}"
 ></md-assist-chip>`;
         }
     }
@@ -90,9 +92,23 @@ ${this.getEngineMove()}</p>`;
                     : { action: "", data: { score: "", depth: "", best: "" } };
 
                 if (action === "onData") {
-                    this.score = data["score"];
+                    //this.score = data["score"];
+                    const inScore = data["score"];
                     this.depth = data["depth"];
                     this.best = data["best"];
+                    const  cp = parseInt(inScore);
+                    //lichess style evaluation
+                    const multiplier = -0.00368208;
+                    const wdl = 50 + 50 * (2 / (Math.exp(multiplier * cp) + 1) - 1 )
+// Look here for analyze logic
+//https://chess.stackexchange.com/questions/40238/how-does-centipawn-scoring-work-why-is-a-higher-positive-score-horrible-while
+                    //const wdl = Math.max(-1,Math.min(1, cp/1000))
+//                    const z = 2 / (1+Math.exp(multiplier * wdl)) -1
+
+                    
+                    this.score = wdl.toFixed(2);            
+                    this.cp = inScore;
+
                     ws.close();
                 }
             };
