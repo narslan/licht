@@ -8,21 +8,62 @@ import "@material/web/divider/divider.js";
 
 import "chessboard-element";
 
+interface PGNRow {
+    date: string;
+    event: string;
+    player1: string;
+    player2: string;
+    result: string;
+    site: string;
+    eco: string;
+    moves: string;
+}
+
 @customElement("pgn_server-element")
 export class PGNServer extends LitElement {
-  @query("#database_id")
-  _database_id: unknown;
+    @query("#database_id")
+    _database_id: unknown;
 
-  @property({ type: WebSocket })
-  ws = new WebSocket(`ws://localhost:8000/_pgndb`);
+    @property({ type: WebSocket })
+    ws = new WebSocket(`ws://localhost:8000/_pgndb`);
+    @property({ type: Array  })
+    pagans = [];
 
-  static styles = css``;
-
+    
+    @property({ attribute: false })
+    header = ["Date", "Event", "White", "Black", "Result", "Site", "Eco"];
+    
+    static styles = css``;
+   
+    
   render() {
     return html`
-      <div id="database_id"></div>
-    
-      </div>
+<div id="database_id"></div>
+<div id="pgn_table">
+<table>
+<thead>
+<tr>
+${this.header.map(i => html`<th>${i}</th>`)}
+</tr>
+</thead>
+<tbody>
+
+${this.pagans?.map(i => html`
+          <tr>
+          <td>${i["date"]}</td>
+          <td>${i["event"]}</td>
+          <td>${i["player1"]}</td>
+          <td>${i["player2"]}</td>
+          <td>${i["result"]}</td>
+          <td>${i["site"]}</td>
+          <td>${i["eco"]}</td>
+          </tr>
+          `)}
+    </tbody>
+  </table>
+
+
+</div>
     `;
   }
 
@@ -31,19 +72,16 @@ export class PGNServer extends LitElement {
     await this.updateComplete;
 
     this.ws.onmessage = (msg: MessageEvent) => {
-      const { action, data } = msg.data.startsWith("{")
+      const { db, pgns } = msg.data.startsWith("{")
         ? (JSON.parse(msg.data) as {
-          action: string;
-          data: {
-            moves: string;
             db: string;
-          };
+            pgns: [];
         })
-        : { action: "", data: { moves: "", db: "" } };
-
-      if (action === "onConnect") {
-        console.log(data);
-      }
+        : { db: "", pgns: [] };
+        console.log(pgns);
+        this.db = db;
+        this.pagans = pgns;
+        
     };
   }
 
